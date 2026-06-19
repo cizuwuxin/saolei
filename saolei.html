@@ -82,7 +82,6 @@ modalIcon:$('modal-icon'), modalIconCircle:$('modal-icon-circle'),
 modalTitle:$('modal-title'), modalBadge:$('modal-badge'),
 modalStats:$('modal-stats'), modalMsg:$('modal-message'),
 progressBar:$('progress-bar'), progressContainer:$('progress-container'),
-diffBadge:$('diff-badge'), modeBadge:$('mode-badge'),
 confetti:$('confetti-canvas'),
 };
 
@@ -103,7 +102,7 @@ const ui = {
 scale:1, minScale:.5, maxScale:4, offset:{x:0,y:0}, cellSize:30, cells:null,
 pan:null, pinch:null, moved:false, longPress:false, dragging:false,
 pressCancelled:false, ignoreMouse:false, wasPinching:false,
-touch:null, currentCell:null, chord:null, snap:null, audio:null, storageWarned:false,
+touch:null, currentCell:null, chord:null, snap:null, audio:null,
 timers:{ save:null, modal:null, resize:null, toast:null, longPress:null, ignoreMouse:null },
 _areaRect:null, _wrapNatural:null,
 confettiFrame:null,
@@ -294,7 +293,7 @@ soundEnabled:state.soundEnabled, questionMarkEnabled:state.questionMarkEnabled,
 customRows:CONFIG.custom.rows, customCols:CONFIG.custom.cols, customMines:CONFIG.custom.mines,
 noguessSpeed:state.noguessSpeed, noguessTimeSeconds:state.noguessTimeSeconds,
 }));
-if(!ok&&!ui.storageWarned)ui.storageWarned=true;
+if(!ok)toast('设置保存失败，可能是浏览器存储不可用',2500);
 }
 function saveSettings() {
 stopTimerId('save');
@@ -324,11 +323,6 @@ syncNoguessTimeUI(normalizeNoguessTimeSeconds(saved.noguessTimeSeconds??saved.no
 syncCustomInputs(Object.assign(CONFIG.custom,normalizeConfig({rows:saved.customRows,cols:saved.customCols,mines:saved.customMines})));
 ['difficulty','mode','actionMode'].forEach(name=>applySetting(name,validSetting(name,saved[name])?saved[name]:state[name],false));
 }
-function updateModeBadge(mode=state.mode) {
-if(!dom.modeBadge)return;
-dom.modeBadge.textContent=mode==='noguess'?'无猜':'传统';
-dom.modeBadge.dataset.mode=mode;
-}
 function applySetting(name,value,shouldSave=true) {
 if(!validSetting(name,value))return;
 state[name]=value;
@@ -338,7 +332,6 @@ if(name==='mode') {
 $('mode-hint').textContent=HINT.mode[value];
 const isNoguess=value==='noguess';$('noguess-speed-row').hidden=!isNoguess;$('noguess-time-row').hidden=!isNoguess;
 if(value==='noguess'){syncNoguessSpeedUI(state.noguessSpeed);syncNoguessTimeUI(state.noguessTimeSeconds);}
-updateModeBadge();
 }
 if(name==='actionMode')$('action-mode-hint').textContent=HINT.actionMode[value];
 if(shouldSave)saveSettings();
@@ -349,7 +342,6 @@ difficulty:state.difficulty, mode:state.mode,
 noguessSpeed:state.noguessSpeed, noguessTimeSeconds:state.noguessTimeSeconds,
 customParams:state.difficulty==='custom'?`${CONFIG.custom.rows},${CONFIG.custom.cols},${CONFIG.custom.mines}`:'',
 };
-refreshRecordsPanel();
 dom.settings.classList.add('show');
 }
 function closeSettings() {
@@ -362,17 +354,6 @@ customChanged=ui.snap?.difficulty==='custom'&&ui.snap?.customParams!==`${cfg.row
 const diffModeChanged=!!ui.snap&&(ui.snap.difficulty!==state.difficulty||ui.snap.mode!==state.mode||ui.snap.noguessSpeed!==state.noguessSpeed||ui.snap.noguessTimeSeconds!==state.noguessTimeSeconds);
 ui.snap=null; saveSettings();
 if(diffModeChanged||customChanged)newGame({fromSettings:true});
-}
-
-function refreshRecordsPanel() {
-if(!$('rec-best'))return;
-const d=state.difficulty, dk=diffRecordKey(), data=records(), st=normalizeStats(data[dk+'_stats']), best=isPlainObject(data[dk])?data[dk]:null;
-$('records-diff-label').textContent='· '+(d==='custom'?`${LABEL[d]} ${state.rows}×${state.cols} ${state.mines}雷`:LABEL[d]);
-$('rec-best').textContent=best?formatTime(best.time)+'秒':'—';
-$('rec-best-date').textContent=best?.date||'';
-$('rec-wins').textContent=st.wins;
-$('rec-winrate').textContent=st.total?Math.round(st.wins/st.total*100)+'%':'0%';
-$('rec-total').textContent='共 '+st.total+' 局';
 }
 
 let recordsCache=null;
@@ -487,8 +468,6 @@ kbR:-1, kbC:-1, gameId:state.gameId+1, actualMode:state.mode,
 stopTimer(); stopPan(); resetInputState();
 renderBoard(); adjustBoardSize(); updateStats();
 syncUndoButton(); updateProgressBar();
-if(dom.diffBadge)dom.diffBadge.textContent=LABEL[state.difficulty];
-updateModeBadge();
 }
 
 const prepareCell=(cell,r,c)=>{
@@ -718,7 +697,7 @@ try { await placeMines(r,c,gameId); }
 catch (err) {
 if(state.gameId!==gameId)return;
 hideToast();
-dom.warning.hidden=false; state.actualMode='traditional'; updateModeBadge('traditional');
+dom.warning.hidden=false; state.actualMode='traditional';
 generateBoard(safeZone(r,c));
 } finally {
 if(state.gameId===gameId)state.placing=false;
@@ -1203,11 +1182,6 @@ const onClick=(id,fn)=>{const el=$(id); if(el)el.addEventListener('click',fn);};
 ['btn-undo-modal',doUndo],
 ['btn-undo-topbar',doUndo],
 ['btn-apply-custom',()=>{applyCustomConfig({selectDifficulty:true});ui.snap=null;dom.settings.classList.remove('show');newGame({fromSettings:true});}],
-['btn-clear-records',()=>{
-if(!confirm('确认清除所有难度的战绩记录？'))return;
-storageRemove(LS.records); recordsCache=null; refreshRecordsPanel();
-toast('战绩已清除',2000);
-}],
 ].forEach(([id,fn])=>onClick(id,fn));
 
 [
