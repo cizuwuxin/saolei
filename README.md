@@ -1,5 +1,7 @@
 # 扫雷 / Minesweeper
 
+![游戏截图](./screenshot.png)
+
 单文件 HTML 扫雷游戏，使用 Material Design 3 视觉风格，无外部依赖。
 
 A single-file HTML Minesweeper game using Material Design 3, with no external dependencies.
