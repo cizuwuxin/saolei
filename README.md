@@ -2,9 +2,11 @@
 
 一个用 Material Design 3 风格写的扫雷游戏，单文件 HTML，零依赖。
 
-## 试玩
+## 🎮 试玩
 
-打开 [`saolei.html`](./saolei.html) 就能玩。手机、平板、电脑都行，自动跟随系统的浅色/深色主题，也可以在游戏内手动切换。
+👉 **[点我开始游戏](https://cizuwuxin.github.io/saolei/saolei.html)**
+
+手机、平板、电脑都行，自动跟随系统的浅色/深色主题，也可以在游戏内手动切换。
 
 ## 操作
 
