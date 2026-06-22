@@ -385,6 +385,8 @@ return{wins:toCount(s.wins),total:toCount(s.total),streak:toCount(s.streak),best
 }
 const records=()=>recordsCache||(recordsCache=readJsonObject(rawRecords()));
 function writeRecords(data) {
+const customKeys=Object.keys(data).filter(x=>x.startsWith('custom_')&&!x.endsWith('_stats'));
+while(customKeys.length>30){const old=customKeys.shift();delete data[old];delete data[old+'_stats'];}
 try{ const raw=JSON.stringify(data); if(storageSet(LS.records,raw))recordsCache=data; }catch{}
 }
 const diffRecordKey=()=>state.difficulty!=='custom'?state.difficulty:`custom_${state.rows}x${state.cols}x${state.mines}`;
@@ -717,6 +719,7 @@ if(state.flagged[r][c]||state.revealed[r][c]||state.placing)return;
 const wasFirstClick=state.firstClick;
 if(wasFirstClick) {
 const gameId=state.gameId; state.firstClick=false; state.placing=true;
+audioCtx();
 try { await placeMines(r,c,gameId); }
 catch (err) {
 if(state.gameId!==gameId)return;
@@ -1141,21 +1144,19 @@ if(!e.target.closest('.cell'))resetView();
 });
 dom.area.addEventListener('wheel',e=>{
 e.preventDefault();
-const rect=ui._areaRect||dom.area.getBoundingClientRect();
-const mx=e.clientX-rect.left, my=e.clientY-rect.top;
 const next=clamp(ui.scale*(e.deltaY<0?1.12:.9),ui.minScale,ui.maxScale);
 if(next===ui.scale)return;
-const lx=(mx-ui.offset.x)/ui.scale, ly=(my-ui.offset.y)/ui.scale;
-ui.scale=next; ui.offset={x:mx-lx*next,y:my-ly*next}; applyTransform();
+const wr=dom.wrapper.getBoundingClientRect();
+const dx=e.clientX-(wr.left+wr.width/2), dy=e.clientY-(wr.top+wr.height/2);
+const ratio=1-next/ui.scale;
+ui.offset={x:ui.offset.x+dx*ratio,y:ui.offset.y+dy*ratio};
+ui.scale=next; applyTransform();
 },{passive:false});
 dom.area.addEventListener('touchstart',e=>{
 if(e.touches.length===2){
 const[a,b]=e.touches;
 const cx=(a.clientX+b.clientX)/2, cy=(a.clientY+b.clientY)/2;
-const wr=dom.wrapper.getBoundingClientRect();
-ui.pinch={dist:Math.max(1,Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY)),scale:ui.scale,
-naturalX:wr.left-ui.offset.x,naturalY:wr.top-ui.offset.y,
-local:{x:(cx-wr.left)/ui.scale,y:(cy-wr.top)/ui.scale}};
+ui.pinch={dist:Math.max(1,Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY)),scale:ui.scale,cx,cy};
 ui.wasPinching=true; stopPan(); dom.wrapper.classList.add('dragging'); e.preventDefault();
 } else if(e.touches.length===1&&(!e.target.closest('.cell')||state.gameOver||state.placing)){
 const t=e.touches[0]; startPan(t.clientX,t.clientY);
@@ -1166,8 +1167,12 @@ if(ui.pinch&&e.touches.length>=2){
 const[a,b]=e.touches;
 const cx=(a.clientX+b.clientX)/2, cy=(a.clientY+b.clientY)/2;
 const dist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
-ui.scale=clamp(ui.pinch.scale*dist/ui.pinch.dist,ui.minScale,ui.maxScale);
-ui.offset={x:cx-ui.pinch.naturalX-ui.scale*ui.pinch.local.x,y:cy-ui.pinch.naturalY-ui.scale*ui.pinch.local.y};
+const next=clamp(ui.pinch.scale*dist/ui.pinch.dist,ui.minScale,ui.maxScale);
+const wr=dom.wrapper.getBoundingClientRect();
+const dx=ui.pinch.cx-(wr.left+wr.width/2), dy=ui.pinch.cy-(wr.top+wr.height/2);
+const ratio=1-next/ui.scale;
+ui.offset={x:ui.offset.x+dx*ratio+(cx-ui.pinch.cx),y:ui.offset.y+dy*ratio+(cy-ui.pinch.cy)};
+ui.scale=next; ui.pinch.cx=cx; ui.pinch.cy=cy;
 applyTransform(); e.preventDefault(); return;
 }
 if(!ui.pan||e.touches.length!==1)return;
