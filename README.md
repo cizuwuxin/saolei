@@ -1,61 +1,63 @@
+<div align="center">
+
 # 芲林 · Minesweeper
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Project-Minesweeper-6750A4?style=for-the-badge&logo=github" alt="Project Badge" />
-  <img src="https://img.shields.io/badge/Style-Material%203-7D5260?style=for-the-badge&logo=materialdesign" alt="Style Badge" />
-  <img src="https://img.shields.io/badge/Status-Active-2E7D32?style=for-the-badge&logo=vercel" alt="Status Badge" />
-</p>
+<img src="https://img.shields.io/badge/Project-Minesweeper-6750A4?style=flat-square" alt="Project" />
+<img src="https://img.shields.io/badge/Style-Material%203-7D5260?style=flat-square" alt="Style" />
+<img src="https://img.shields.io/badge/Deploy-GitHub%20Pages-2E7D32?style=flat-square" alt="Deploy" />
 
-<p align="center">
-  一个高完成度的单文件扫雷游戏主页，强调视觉质感、交互细节与移动端体验。
-</p>
+<br />
 
-<p align="center">
+一个单文件扫雷游戏，主打清晰、稳定、好部署。
+
+<p>
   <a href="https://cizuwuxin.github.io/minesweeper/">在线体验</a> ·
-  <a href="#项目亮点">项目亮点</a> ·
-  <a href="#技术栈">技术栈</a> ·
-  <a href="#快速开始">快速开始</a>
+  <a href="#项目简介">项目简介</a> ·
+  <a href="#截图">截图</a> ·
+  <a href="#技术栈">技术栈</a>
+</p>
+
+</div>
+
+---
+
+## 项目简介
+
+这是一个基于 HTML、CSS 和 JavaScript 的单文件扫雷项目。  
+界面采用 Material Design 3 风格，支持深色/浅色模式、键盘操作、触摸操作、自定义难度和无猜模式等功能。
+
+我把它做成了适合直接部署到 GitHub Pages 的形式，打开即用，不需要额外依赖。
+
+---
+
+## 项目特性
+
+- **单文件实现**：核心功能集中在 `index.html`
+- **界面简洁**：统一的 Material Design 3 风格
+- **响应式布局**：适配手机、平板和桌面
+- **双主题支持**：深色 / 浅色模式切换
+- **玩法完整**：支持插旗、撤销、重开等常用操作
+- **无猜模式**：提供更偏逻辑推理的玩法
+- **自定义难度**：可调整行、列和雷数
+- **本地存储**：保存设置和部分状态数据
+
+---
+
+## 截图
+
+<p align="center">
+  <img src="./screenshot.png" alt="Minesweeper Screenshot" width="900" />
 </p>
 
 ---
 
-## 👋 你好，我是芲林
+## 在线地址
 
-我更喜欢把一个项目打磨成“能用、好看、顺手”的状态。  
-这个仓库是我的扫雷作品：**单文件、零依赖、可直接部署到 GitHub Pages**，并尽量把经典玩法做得更现代、更流畅。
-
----
-
-## ✨ 项目亮点
-
-- **单文件部署**：所有 HTML / CSS / JS 集中在一个文件里，维护与发布都很轻量
-- **Material Design 3 风格**：整体视觉更统一，适配明暗主题
-- **移动端友好**：针对手机触控、视口变化做了细节优化
-- **无猜模式**：提供更偏逻辑推理的游玩体验
-- **自定义难度**：行、列、雷数都可调
-- **操作完整**：支持鼠标、键盘、触摸，多种交互方式
-- **本地记录**：保留设置和统计，打开即续
+- GitHub Pages：<https://cizuwuxin.github.io/minesweeper/>
 
 ---
 
-## 🧩 这个仓库里有什么
-
-- `index.html`：游戏本体，单文件实现
-- `README.md`：主页说明
-- `screenshot.png`：展示截图
-- `LICENSE`：开源许可
-
----
-
-## 🚀 在线体验
-
-> GitHub Pages：**[https://cizuwuxin.github.io/minesweeper/](https://cizuwuxin.github.io/minesweeper/)**
-
-如果你只是想先看看效果，直接打开上面链接即可。
-
----
-
-## 🛠️ 技术栈
+## 技术栈
 
 - HTML5
 - CSS3
@@ -66,7 +68,7 @@
 
 ---
 
-## 🎮 操作说明
+## 操作说明
 
 | 操作 | 功能 |
 |---|---|
@@ -79,7 +81,7 @@
 
 ---
 
-## 📱 兼容性
+## 兼容性
 
 - 桌面浏览器
 - 手机浏览器
@@ -88,14 +90,32 @@
 
 ---
 
-## 🖼️ 预览
+## 项目结构
 
-> 你可以把仓库中的 `screenshot.png` 放在这里展示游戏界面。  
-> 如果你愿意，我也可以下一步帮你把这块做成更高级的卡片式展示。
+```text
+minesweeper/
+├── index.html
+├── README.md
+├── screenshot.png
+└── LICENSE
+```
 
 ---
 
-## 🔗 联系方式
+## 说明
+
+这个项目的目标很直接：
+
+1. 能正常玩
+2. 打开速度快
+3. 方便部署和维护
+4. 在手机上也能比较顺手地使用
+
+如果后续继续更新，我也会尽量保持内容克制，不把页面做得太花。
+
+---
+
+## 联系方式
 
 - GitHub：`cizuwuxin`
 - 项目主页：`https://cizuwuxin.github.io/minesweeper/`
@@ -103,5 +123,5 @@
 ---
 
 <p align="center">
-  <sub>Made with patience, precision, and a bit of Minesweeper logic.</sub>
+  <sub>Simple, stable, and easy to deploy.</sub>
 </p>
