@@ -1,0 +1,1285 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>扫雷</title>
+<style>:root{color-scheme:light;--md-sys-color-primary:#6750A4;--md-sys-color-on-primary:#FFFFFF;--md-sys-color-primary-container:#EADDFF;--md-sys-color-on-primary-container:#21005D;--md-sys-color-primary-fixed:#EADDFF;--md-sys-color-primary-fixed-dim:#D0BCFF;--md-sys-color-on-primary-fixed:#21005D;--md-sys-color-on-primary-fixed-variant:#4F378B;--md-sys-color-secondary:#625B71;--md-sys-color-on-secondary:#FFFFFF;--md-sys-color-secondary-container:#E8DEF8;--md-sys-color-on-secondary-container:#1D192B;--md-sys-color-secondary-fixed:#E8DEF8;--md-sys-color-secondary-fixed-dim:#CCC2DC;--md-sys-color-on-secondary-fixed:#1D192B;--md-sys-color-on-secondary-fixed-variant:#4A4458;--md-sys-color-tertiary:#7D5260;--md-sys-color-on-tertiary:#FFFFFF;--md-sys-color-tertiary-container:#FFD8E4;--md-sys-color-on-tertiary-container:#31111D;--md-sys-color-tertiary-fixed:#FFD8E4;--md-sys-color-tertiary-fixed-dim:#EFB8C8;--md-sys-color-on-tertiary-fixed:#31111D;--md-sys-color-on-tertiary-fixed-variant:#633B48;--md-sys-color-error:#B3261E;--md-sys-color-on-error:#FFFFFF;--md-sys-color-error-container:#F9DEDC;--md-sys-color-on-error-container:#410E0B;--md-sys-color-background:#F2E7F0;--md-sys-color-on-background:#332B38;--md-sys-color-surface:#F2E7F0;--md-sys-color-on-surface:#332B38;--md-sys-color-surface-dim:#E0CFDD;--md-sys-color-surface-bright:#F6ECF4;--md-sys-color-on-surface-variant:#5C4F61;--md-sys-color-surface-container-lowest:#FBF3F9;--md-sys-color-surface-container-low:#F0E2ED;--md-sys-color-surface-container:#EBDAE8;--md-sys-color-surface-container-high:#E4CFE0;--md-sys-color-surface-container-highest:#DCC4D8;--md-sys-color-outline:#79747E;--md-sys-color-outline-variant:#CAC4D0;--md-sys-shape-corner-medium:12px;--md-sys-shape-corner-large:16px;--md-sys-shape-corner-extra-large:28px;--md-sys-shape-corner-full:999px;--md-ease:cubic-bezier(.2,0,0,1);--bg:var(--md-sys-color-background);--fg:var(--md-sys-color-on-background);--muted:var(--md-sys-color-on-surface-variant);--accent:var(--md-sys-color-primary);--accent-hover:var(--md-sys-color-on-primary-fixed-variant);--card:var(--md-sys-color-surface-container-low);--border:var(--md-sys-color-outline-variant);--area-bg:linear-gradient(160deg,color-mix(in srgb,var(--md-sys-color-surface-bright) 94%,var(--md-sys-color-primary) 4%) 0%,color-mix(in srgb,var(--md-sys-color-surface-dim) 96%,var(--md-sys-color-primary) 3%) 100%);--wrap-bg:var(--md-sys-color-surface-container-low);--hidden:var(--md-sys-color-surface-container-high);--open:var(--md-sys-color-surface-container-lowest);--hover:var(--md-sys-color-surface-dim);--shadow:rgba(103,80,164,.16);--mine-bg:var(--md-sys-color-error-container);--mine-fg:var(--md-sys-color-on-error-container);--boom:var(--md-sys-color-error);
+    --flag:#E53935;
+    --wrong:color-mix(in srgb,var(--md-sys-color-error) 16%,var(--md-sys-color-surface-container-high));--success:#2E7D32;--warn:#E65100;--warn-soft:#FFF3E0;--board-gap:2;--board-pad:8px;--radius-cell:10px;--n1:#1565C0;--n2:#2E7D32;--n3:#C62828;--n4:#6A1B9A;--n5:#AD1457;--n6:#00695C;--n7:#37474F;--n8:#546E7A}body.dark{color-scheme:dark;--md-sys-color-primary:#D0BCFF;--md-sys-color-on-primary:#381E72;--md-sys-color-primary-container:#4F378B;--md-sys-color-on-primary-container:#EADDFF;--md-sys-color-primary-fixed:#EADDFF;--md-sys-color-primary-fixed-dim:#D0BCFF;--md-sys-color-on-primary-fixed:#21005D;--md-sys-color-on-primary-fixed-variant:#4F378B;--md-sys-color-secondary:#CCC2DC;--md-sys-color-on-secondary:#332D41;--md-sys-color-secondary-container:#4A4458;--md-sys-color-on-secondary-container:#E8DEF8;--md-sys-color-secondary-fixed:#E8DEF8;--md-sys-color-secondary-fixed-dim:#CCC2DC;--md-sys-color-on-secondary-fixed:#1D192B;--md-sys-color-on-secondary-fixed-variant:#4A4458;--md-sys-color-tertiary:#EFB8C8;--md-sys-color-on-tertiary:#492532;--md-sys-color-tertiary-container:#633B48;--md-sys-color-on-tertiary-container:#FFD8E4;--md-sys-color-tertiary-fixed:#FFD8E4;--md-sys-color-tertiary-fixed-dim:#EFB8C8;--md-sys-color-on-tertiary-fixed:#31111D;--md-sys-color-on-tertiary-fixed-variant:#633B48;--md-sys-color-error:#F2B8B5;--md-sys-color-on-error:#601410;--md-sys-color-error-container:#8C1D18;--md-sys-color-on-error-container:#F9DEDC;--md-sys-color-background:#141218;--md-sys-color-on-background:#E6E0E9;--md-sys-color-surface:#141218;--md-sys-color-on-surface:#E6E0E9;--md-sys-color-surface-dim:#141218;--md-sys-color-surface-bright:#3B383E;--md-sys-color-on-surface-variant:#CAC4D0;--md-sys-color-surface-container-lowest:#0F0D13;--md-sys-color-surface-container-low:#1D1B20;--md-sys-color-surface-container:#211F26;--md-sys-color-surface-container-high:#2B2930;--md-sys-color-surface-container-highest:#36343B;--md-sys-color-outline:#938F99;--md-sys-color-outline-variant:#49454F;--bg:var(--md-sys-color-background);--fg:var(--md-sys-color-on-background);--muted:var(--md-sys-color-on-surface-variant);--accent:var(--md-sys-color-primary);--accent-hover:#B69DF8;--card:var(--md-sys-color-surface-container-low);--border:var(--md-sys-color-outline-variant);--area-bg:linear-gradient(160deg,color-mix(in srgb,var(--md-sys-color-surface-dim) 94%,var(--md-sys-color-primary) 6%) 0%,color-mix(in srgb,var(--md-sys-color-surface-container-low) 96%,var(--md-sys-color-primary) 4%) 100%);--wrap-bg:var(--md-sys-color-surface-container-low);--hidden:var(--md-sys-color-surface-container-high);--open:var(--md-sys-color-surface-container-lowest);--hover:var(--md-sys-color-surface-bright);--shadow:rgba(0,0,0,.42);--mine-bg:var(--md-sys-color-error-container);--mine-fg:var(--md-sys-color-on-error-container);--boom:#B3261E;
+    --flag:#EF4444;
+    --wrong:color-mix(in srgb,var(--md-sys-color-error) 16%,var(--md-sys-color-surface-container-high));--success:#81C784;--warn:#FDD663;--warn-soft:#3E2723;--n1:#82B1FF;--n2:#81C784;--n3:#EF9A9A;--n4:#CE93D8;--n5:#F48FB1;--n6:#4DB6AC;--n7:#B0BEC5;--n8:#90A4AE}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none}body{margin:0;min-height:100dvh;overflow:hidden;display:flex;flex-direction:column;font-family:system-ui,-apple-system,"Segoe UI","Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--fg);user-select:none;-webkit-user-select:none;transition:background-color .2s var(--md-ease),color .2s var(--md-ease)}button,input{font:inherit}.btn{position:relative;min-height:34px;border:1px solid var(--md-sys-color-outline);border-radius:var(--md-sys-shape-corner-full);background:transparent;color:var(--md-sys-color-primary);padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;overflow:hidden;transition:background-color .16s var(--md-ease),box-shadow .16s var(--md-ease),transform .1s var(--md-ease)}.btn:hover{background:color-mix(in srgb,var(--md-sys-color-primary) 8%,transparent)}.btn:active{transform:scale(.96);background:color-mix(in srgb,var(--md-sys-color-primary) 12%,transparent)}.btn.active,.btn-primary{border-color:var(--md-sys-color-primary);background:var(--md-sys-color-primary);color:var(--md-sys-color-on-primary);box-shadow:0 1px 2px rgba(0,0,0,.18)}.btn.active:hover,.btn-primary:hover{background:var(--accent-hover)}.icon-btn{width:36px;padding:0;display:flex;align-items:center;justify-content:center}.icon-btn:disabled{opacity:.38;cursor:default;pointer-events:none}.btn-close{background:transparent;border:0;color:var(--muted);width:32px;height:32px;border-radius:var(--md-sys-shape-corner-full);cursor:pointer;font-size:16px;line-height:1}.btn-close:hover{background:color-mix(in srgb,var(--md-sys-color-on-surface) 8%,transparent);color:var(--fg)}#top-bar{z-index:10;flex-shrink:0;min-height:56px;padding:8px 14px;background:var(--md-sys-color-surface-container-low);border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;box-shadow:0 1px 2px rgba(0,0,0,.06)}#top-bar-stats,#top-bar-actions{display:flex;align-items:center;gap:6px}#top-bar-stats{flex:1;min-width:0}#top-bar-actions{flex-shrink:0}.stat-item{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 8px;border:0;border-radius:var(--md-sys-shape-corner-medium);background:var(--md-sys-color-surface-container);font-size:11px;color:var(--muted)}.stat-row{display:flex;align-items:center;gap:4px}.stat-value{min-width:20px;text-align:center;font-size:16px;font-weight:800;color:var(--fg);line-height:1.1}.stat-label{font-size:10px;color:var(--muted);margin-top:1px}.stat-item svg{flex-shrink:0}.cs{font-size:.58em;font-weight:700;opacity:.72;margin-left:1px;vertical-align:.05em}#progress-container{flex-shrink:0;height:3px;background:var(--md-sys-color-surface-container-high);overflow:hidden}#progress-bar{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--success));transition:width .28s var(--md-ease);border-radius:0 2px 2px 0}#progress-bar.full{background:linear-gradient(90deg,var(--success),#4CAF50)}#warning-bar{flex-shrink:0;z-index:9;display:flex;justify-content:space-between;gap:8px;padding:6px 12px;border-bottom:1px solid color-mix(in srgb,var(--warn) 45%,transparent);background:var(--warn-soft);color:color-mix(in srgb,var(--warn) 45%,var(--fg));font-size:12px;font-weight:600}#warning-bar[hidden]{display:none}#btn-close-warning{border:0;background:transparent;color:inherit;cursor:pointer;border-radius:var(--md-sys-shape-corner-full)}.num-1{color:var(--n1)}.num-2{color:var(--n2)}.num-3{color:var(--n3)}.num-4{color:var(--n4)}.num-5{color:var(--n5)}.num-6{color:var(--n6)}.num-7{color:var(--n7)}.num-8{color:var(--n8)}#game-area{flex:1;width:100%;overflow:hidden;position:relative;padding:8px;touch-action:none;display:flex;align-items:center;justify-content:center;background:var(--area-bg)}#board-wrapper{padding:var(--board-pad);background:var(--wrap-bg);border-radius:24px;box-shadow:0 1px 2px rgba(0,0,0,.06),0 4px 12px rgba(0,0,0,.10),0 12px 32px rgba(0,0,0,.14);cursor:grab;touch-action:none;transform-origin:center center;will-change:transform;border:1px solid var(--border);animation:board-in .18s var(--md-ease)}body.dark #board-wrapper{box-shadow:0 1px 2px rgba(0,0,0,.35),0 8px 24px rgba(0,0,0,.28)}#board-wrapper.dragging{cursor:grabbing}#board{display:grid}.cell{width:var(--cell-size);height:var(--cell-size);font-size:var(--cell-font);display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:1px solid color-mix(in srgb,var(--md-sys-color-on-surface) 9%,transparent);border-radius:var(--radius-cell);background:var(--hidden);cursor:pointer;touch-action:manipulation;font-weight:800;box-shadow:0 1px 2px rgba(0,0,0,.10),inset 0 1px 0 rgba(255,255,255,.6);transition:background-color .12s var(--md-ease),box-shadow .12s var(--md-ease),transform .1s var(--md-ease)}.cell::after{content:"";position:absolute;inset:0;background:currentColor;opacity:0;pointer-events:none;transition:opacity .12s var(--md-ease)}.cell:hover:not(.revealed):not(.flagged):not(.questioned){background:var(--hover);transform:translateY(-1px);box-shadow:0 3px 10px rgba(103,80,164,.18)}.cell:hover:not(.revealed):not(.flagged):not(.questioned)::after{opacity:.04}.cell svg{pointer-events:none;z-index:1}.cell.flagged::before{content:"";width:60%;height:60%;background:var(--flag);clip-path:polygon(12% 0,62% 0,66% 12%,100% 12%,100% 64%,48% 64%,44% 52%,24% 52%,24% 100%,12% 100%);pointer-events:none;z-index:1}.cell.pressing{transform:scale(.92)!important;background:var(--warn-soft)!important;box-shadow:0 0 0 2px var(--warn)!important}.cell.revealed{background:var(--open);box-shadow:inset 0 1px 2px rgba(0,0,0,.10);cursor:default;border-color:transparent}.cell.flagged{background:var(--md-sys-color-primary-container);color:var(--flag);box-shadow:0 1px 4px rgba(103,80,164,.18)}.cell.questioned{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}.cell.mine-show{background:var(--mine-bg);color:var(--mine-fg)}.cell.exploded{background:var(--boom);color:#fff}.cell.wrong-flag{background:var(--wrong)}.cell.hint{box-shadow:0 0 0 2.5px var(--accent)!important;z-index:1}.cell.hint-dim{box-shadow:0 0 0 2px var(--md-sys-color-outline)!important;opacity:.72}.cell.kb-focus{outline:3px solid var(--accent);outline-offset:-2px;z-index:1}@keyframes board-in{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:scale(1)}}@keyframes cell-pop{0%{transform:scale(.84);opacity:.55}60%{transform:scale(1.05)}100%{transform:scale(1);opacity:1}}@keyframes flag-spring{0%{transform:scale(0) rotate(-35deg)}65%{transform:scale(1.18) rotate(7deg)}100%{transform:scale(1) rotate(0)}}@keyframes explode-pulse{0%{transform:scale(1)}35%{transform:scale(1.25)}70%{transform:scale(.96)}100%{transform:scale(1)}}@keyframes mine-ripple{0%{box-shadow:0 0 0 0 rgba(179,38,30,.55)}70%{box-shadow:0 0 0 14px rgba(179,38,30,0)}100%{box-shadow:0 0 0 0 rgba(179,38,30,0)}}@keyframes win-dance{0%,100%{transform:scale(1)}35%{transform:scale(1.12) rotate(6deg)}70%{transform:scale(1.05) rotate(-4deg)}}.cell.anim-reveal{animation:cell-pop .16s var(--md-ease) var(--reveal-delay,0ms) both;will-change:transform,opacity}.cell.anim-flag::before{animation:flag-spring .18s cubic-bezier(.2,0,0,1) forwards;will-change:transform}.cell.anim-unflag{animation:cell-pop .12s var(--md-ease);will-change:transform,opacity}.cell.anim-explode{animation:explode-pulse .35s var(--md-ease),mine-ripple .6s var(--md-ease);will-change:transform,box-shadow}.cell.win-flag::before{animation:win-dance .7s ease-in-out infinite}#confetti-canvas{position:fixed;inset:0;pointer-events:none;z-index:600;display:none}.overlay{position:fixed;inset:0;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;background:rgba(0,0,0,.42);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);transition:.22s opacity,.22s visibility}.overlay.show{opacity:1;visibility:visible}#modal{z-index:100}#settings-overlay{z-index:200;background:rgba(0,0,0,.48)}.modal-content,.settings-panel{width:min(94vw,560px);max-height:88vh;overflow:hidden;padding:0;border:0;border-radius:28px;background:var(--md-sys-color-surface-container-low);box-shadow:0 8px 12px rgba(0,0,0,.14),0 24px 48px rgba(0,0,0,.18)}.settings-panel{display:flex;flex-direction:column}.settings-header{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 20px 10px;background:var(--md-sys-color-surface-container-low);border-bottom:1px solid color-mix(in srgb,var(--border) 58%,transparent)}.settings-title-wrap{display:flex;flex-direction:column;gap:2px;min-width:0}.settings-header h3{margin:0;font-size:22px;font-weight:700;line-height:1.15}.settings-subtitle{font-size:12px;color:var(--muted);font-weight:500}.settings-content{overflow:auto;padding:12px 16px 16px;scrollbar-width:thin}.settings-grid{display:flex;flex-direction:column;gap:10px}.settings-section{margin:0;padding:0;border:0;border-radius:24px;background:var(--md-sys-color-surface-container);overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.06)}.settings-label{display:flex;align-items:center;gap:10px;margin:0;padding:12px 16px 8px;color:var(--accent);font-size:13px;font-weight:800;letter-spacing:.2px}.settings-label::before{content:"";display:block;width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0}.settings-buttons{display:flex;flex-wrap:wrap;gap:8px}.settings-section>.settings-buttons,.settings-section>.hint-text,.settings-section>.range-row,.settings-section>.custom-row{margin-left:16px;margin-right:16px}.settings-buttons.segmented{margin:0 12px 12px;padding:4px;border-radius:999px;background:var(--md-sys-color-surface-container-high);border:1px solid color-mix(in srgb,var(--border) 70%,transparent)}.settings-buttons.segmented .btn{flex:1;min-width:72px;border:0;box-shadow:none;background:transparent;color:var(--muted);padding:8px 10px}.settings-buttons.segmented .btn.active{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container);box-shadow:0 1px 2px rgba(0,0,0,.10)}.settings-list,.setting-list{display:flex;flex-direction:column}.settings-list{margin:0 12px 12px;border-radius:18px;overflow:hidden;background:var(--md-sys-color-surface-container-high);border:1px solid color-mix(in srgb,var(--border) 55%,transparent)}.setting-option{display:flex;align-items:center;justify-content:space-between;gap:14px;width:100%;min-height:44px;padding:9px 12px;border:0;border-bottom:1px solid color-mix(in srgb,var(--border) 45%,transparent);background:transparent;color:var(--fg);text-align:left;cursor:pointer;font:inherit;transition:background-color .16s var(--md-ease),transform .12s var(--md-ease)}.setting-option:last-child{border-bottom:0}.setting-option:hover{background:color-mix(in srgb,var(--md-sys-color-primary) 7%,transparent)}.setting-option:active{transform:scale(.99)}.setting-option span{font-size:13px;font-weight:700}.setting-option small{color:var(--muted);font-size:10px;font-weight:500;white-space:nowrap}.setting-option.active{background:var(--md-sys-color-secondary-container);color:var(--md-sys-color-on-secondary-container)}.setting-option.active small{color:color-mix(in srgb,var(--md-sys-color-on-secondary-container) 72%,transparent)}.toggle-row{display:flex;justify-content:space-between;align-items:center;gap:16px;min-height:42px;padding:9px 16px;border-top:1px solid color-mix(in srgb,var(--border) 45%,transparent)}.toggle-row label:first-child{font-size:14px;font-weight:650;cursor:pointer}.toggle-switch{position:relative;width:52px;height:32px;flex-shrink:0}.toggle-switch input{opacity:0;width:0;height:0}.toggle-track{position:absolute;inset:0;background:var(--md-sys-color-surface-container-highest);border:2px solid var(--md-sys-color-outline);border-radius:99px;cursor:pointer;transition:.18s background-color,.18s border-color}.toggle-track::before{content:'';position:absolute;left:4px;top:4px;width:20px;height:20px;background:var(--md-sys-color-outline);border-radius:50%;transition:.18s transform,.18s background-color}.toggle-switch input:checked+.toggle-track{background:var(--accent);border-color:var(--accent)}.toggle-switch input:checked+.toggle-track::before{transform:translateX(20px);background:var(--md-sys-color-on-primary)}.custom-fields{display:none;flex-direction:column;gap:10px;margin:0 12px 12px;padding:10px;border-radius:20px;background:color-mix(in srgb,var(--md-sys-color-surface-container-high) 82%,transparent)}.custom-fields.show{display:flex;animation:section-in .18s var(--md-ease) both}.custom-form{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.custom-row{display:flex;justify-content:space-between;align-items:center;gap:10px}.custom-form .custom-row{flex-direction:column;align-items:stretch;gap:6px}.custom-row label{color:var(--muted);font-size:12px;font-weight:650;white-space:nowrap}.custom-row input{width:100%;box-sizing:border-box;padding:8px 10px;border:1px solid var(--border);border-radius:14px;background:var(--md-sys-color-surface-container-lowest);color:var(--fg);text-align:center;font-size:14px;font-weight:700;outline:none}.custom-row input:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 16%,transparent)}.custom-row input.invalid{border-color:var(--md-sys-color-error);box-shadow:0 0 0 3px color-mix(in srgb,var(--md-sys-color-error) 18%,transparent)}#mines-max-hint{margin-left:4px;color:var(--muted);font-weight:400}#btn-apply-custom{width:100%;padding:11px 16px;border:0;border-radius:999px;background:var(--accent);color:var(--md-sys-color-on-primary);font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.18)}#btn-apply-custom:hover{background:var(--accent-hover)}.hint-text{font-size:12px;color:var(--muted);margin-top:-7px;margin-bottom:14px;line-height:1.5}.range-row{display:flex;flex-direction:column;gap:10px;margin-top:0;margin-bottom:10px;padding:10px;border-radius:20px;background:var(--md-sys-color-surface-container-high)}.range-head{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;font-weight:700}.range-head span{padding:3px 8px;border-radius:999px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);font-size:12px;font-weight:800}.range-input{width:100%;height:8px;border-radius:999px;appearance:none;background:linear-gradient(90deg,var(--accent) 0%,var(--accent) var(--range-fill,50%),var(--md-sys-color-surface-container-highest) var(--range-fill,50%),var(--md-sys-color-surface-container-highest) 100%);outline:none}.range-input::-webkit-slider-thumb{appearance:none;width:22px;height:22px;border:3px solid var(--md-sys-color-surface-container-lowest);border-radius:50%;background:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer}.range-input::-moz-range-thumb{width:22px;height:22px;border:3px solid var(--md-sys-color-surface-container-lowest);border-radius:50%;background:var(--accent);box-shadow:0 2px 6px rgba(0,0,0,.25);cursor:pointer}.density-hint{display:none;margin:2px 0 0;padding:8px 10px;border-radius:14px;font-size:12px;line-height:1.4}.density-hint.warn{display:block;background:var(--warn-soft);color:color-mix(in srgb,var(--warn) 50%,var(--fg))}.density-hint.error{display:block;background:var(--mine-bg);color:var(--mine-fg)}#modal .modal-content{width:min(92vw,420px);max-height:86vh;display:block;animation:modal-in .24s var(--md-ease) both}.modal-icon-wrap{padding:24px 24px 8px;display:flex;justify-content:flex-start}.modal-icon-circle{width:72px;height:72px;border-radius:24px;display:grid;place-items:center;background:var(--md-sys-color-surface-container-high);color:var(--fg);animation:icon-pop .34s cubic-bezier(.2,0,0,1) both}.modal-icon-circle svg{width:44px;height:44px}.modal-icon-circle.icon-loss{background:var(--mine-bg);color:var(--mine-fg)}.modal-icon-circle.icon-win{background:var(--md-sys-color-tertiary-container);color:var(--fg)}.modal-text-section{padding:0 24px 12px}.modal-badge-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.modal-text-section h2{margin:0 0 8px;font-size:28px;line-height:1.18;font-weight:800}.modal-text-section p{margin:0;color:var(--muted);font-size:16px;line-height:1.45}.modal-stats-section{padding:0 24px 10px}.modal-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.modal-stats.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.modal-stat-card{min-width:0;padding:10px 8px;border-radius:16px;background:var(--md-sys-color-surface-container);text-align:center;animation:section-in .22s var(--md-ease) both}.modal-stat-tri{display:flex;flex-direction:column;gap:3px;text-align:left;justify-content:center}.tri-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:12px}.tri-label{color:var(--muted);font-weight:600}.tri-value{font-weight:800}.modal-stat-label{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:3px}.modal-stat-value{font-size:18px;font-weight:800;line-height:1.15;word-break:break-word}.modal-stat-value.small{font-size:15px}.modal-stat-unit{font-size:11px;font-weight:600}.modal-actions-section{padding:8px 24px 24px;display:flex;flex-direction:column;gap:8px}.modal-actions-section .btn,.modal-actions-section .btn-primary{width:100%;min-height:44px;justify-content:center;font-size:15px}.new-record-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;background:var(--md-sys-color-tertiary-container);font-size:11px;font-weight:800}@keyframes modal-in{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}@keyframes icon-pop{0%{opacity:0;transform:scale(.55) rotate(-10deg)}70%{transform:scale(1.08) rotate(3deg)}100%{opacity:1;transform:scale(1) rotate(0)}}@keyframes section-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}@media (max-width:420px){#modal .modal-content{width:min(94vw,380px);border-radius:24px}.modal-icon-wrap{padding:20px 20px 6px}.modal-text-section,.modal-stats-section{padding-left:20px;padding-right:20px}.modal-actions-section{padding:8px 20px 20px}.modal-text-section h2{font-size:24px}.modal-stats.cols-3{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}#status-toast{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px)+12px);z-index:500;box-sizing:border-box;padding:10px 14px;border-radius:16px;background:var(--md-sys-color-surface-container-high);color:var(--fg);box-shadow:0 8px 28px rgba(0,0,0,.18);font-size:14px;font-weight:600;opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .2s var(--md-ease),transform .2s var(--md-ease)}#status-toast.show{opacity:1;transform:translateY(0)}@media (max-width:640px){#top-bar{padding:7px 8px;gap:5px}#top-bar-stats,#top-bar-actions{gap:4px}.stat-item{padding:3px 5px}.btn{padding:7px 12px}.icon-btn{width:36px}}body.dark 
+
+/* mobile WebView fixed-bottom fallback: use visual viewport height via --vvh */
+:root{--vvh:100dvh}
+#status-toast{top:calc(var(--vvh) - env(safe-area-inset-bottom,0px) - 64px)!important;bottom:auto!important}
+.overlay{top:0!important;bottom:auto!important;min-height:var(--vvh)!important;height:var(--vvh)!important;align-items:center!important}
+</style>
+</head><body class="style-md3"><div id="top-bar"><div id="top-bar-stats"><div class="stat-item" title="剩余雷数"><div class="stat-row"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true" style="color:var(--boom)"><g stroke="currentColor" stroke-linecap="round" stroke-width="1.8"><line x1="12" y1="1.5" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22.5" y2="12"/><line x1="4.1" y1="4.1" x2="6.2" y2="6.2"/><line x1="17.8" y1="17.8" x2="19.9" y2="19.9"/><line x1="19.9" y1="4.1" x2="17.8" y2="6.2"/><line x1="6.2" y1="17.8" x2="4.1" y2="19.9"/></g><circle cx="12" cy="12" r="5.8" fill="currentColor"/><ellipse cx="9.8" cy="9.8" rx="1.6" ry="1" fill="#fff" opacity=".4" transform="rotate(-35 9.8 9.8)"/></svg><span class="stat-value" id="mine-count">10</span></div><div class="stat-label">雷</div></div><div class="stat-item" title="用时"><div class="stat-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><span class="stat-value" id="timer"><span id="timer-s">0</span><span id="timer-cs" class="cs"></span></span></div><div class="stat-label">秒</div></div><div class="stat-item" title="已插旗"><div class="stat-row"><svg width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b" aria-hidden="true"><path d="M5 21V4h9l.4 2H20v10h-7l-.4-2H7v7H5z"/></svg><span class="stat-value" id="flag-count">0</span></div><div class="stat-label">旗</div></div></div><div id="top-bar-actions"><button class="btn icon-btn" id="btn-undo-topbar" title="撤销 (Ctrl+Z)" disabled aria-label="撤销"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg></button><button class="btn btn-primary" id="btn-newgame" title="新游戏 (R)">重开</button><button class="btn icon-btn" id="btn-settings" title="设置" aria-label="设置"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.36.07-.73.07-1.08s-.03-.73-.07-1.08l2.32-1.81c.21-.16.27-.46.13-.7l-2.2-3.81c-.13-.24-.42-.32-.66-.24l-2.74 1.1c-.57-.44-1.18-.8-1.86-1.08L14.22 2.4c-.04-.26-.26-.4-.5-.4h-4.4c-.24 0-.46.14-.5.4l-.41 2.48c-.68.28-1.3.64-1.86 1.08l-2.74-1.1c-.24-.09-.53 0-.66.24L1.95 8.41c-.14.24-.08.54.13.7l2.32 1.81C4.36 11.27 4.33 11.64 4.33 12s.03.73.07 1.08L2.08 14.89c-.21.16-.27.46-.13.7l2.2 3.81c.13.24.42.32.66.24l2.74-1.1c.57.44 1.18.8 1.86 1.08l.41 2.48c.04.26.26.4.5.4h4.4c.24 0 .46-.14.5-.4l.41-2.48c.68-.28 1.3-.64 1.86-1.08l2.74 1.1c.24.09.53 0 .66-.24l2.2-3.81c.14-.24.08-.54-.13-.7l-2.32-1.81z"/></svg></button></div></div><div id="progress-container" role="progressbar" aria-label="游戏进度" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progress-bar"></div></div><div id="warning-bar" hidden><span>⚠ 无猜模式生成超时，已回退为传统随机布雷。</span><button id="btn-close-warning" title="关闭" aria-label="关闭">✕</button></div><div class="overlay" id="settings-overlay" role="dialog" aria-modal="true" aria-labelledby="settings-title"><div class="settings-panel"><div class="settings-header"><div class="settings-title-wrap"><h3 id="settings-title">设置</h3><div class="settings-subtitle">只保留影响游戏体验的选项</div></div><button class="btn-close" id="btn-close-settings" aria-label="关闭设置">✕</button></div><div class="settings-content"><div class="settings-grid"><section class="settings-section"><div class="settings-label" data-icon="◈">难度</div><div class="settings-list difficulty-list"><button class="setting-option" data-set="difficulty" data-val="easy"><span>简单</span><small>9×9 · 10 雷</small></button><button class="setting-option" data-set="difficulty" data-val="medium"><span>中等</span><small>16×16 · 40 雷</small></button><button class="setting-option" data-set="difficulty" data-val="hard"><span>困难</span><small>16×30 · 99 雷</small></button><button class="setting-option" data-set="difficulty" data-val="custom"><span>自定义</span><small>手动设置</small></button><button class="setting-option" data-set="difficulty" data-val="random"><span>随机</span><small>偏中小盘</small></button></div><div class="custom-fields" id="custom-fields"><div class="custom-form"><div class="custom-row"><label>行</label><input id="c-rows" type="number" min="5" max="100" value="12"></div><div class="custom-row"><label>列</label><input id="c-cols" type="number" min="5" max="100" value="16"></div><div class="custom-row"><label>雷<span id="mines-max-hint"></span></label><input id="c-mines" type="number" min="1" value="20"></div></div><p class="density-hint" id="density-hint"></p><button id="btn-apply-custom">应用并重开</button></div></section><section class="settings-section"><div class="settings-label" data-icon="✓">规则</div><div class="settings-buttons segmented"><button class="btn" data-set="mode" data-val="traditional">传统</button><button class="btn" data-set="mode" data-val="noguess">无猜</button></div><div id="mode-hint" class="hint-text"></div><div class="range-row" id="noguess-speed-row" hidden><div class="range-head"><label for="noguess-speed">生成强度</label><span id="noguess-speed-value">100%</span></div><input id="noguess-speed" class="range-input" type="range" min="1" max="100" step="1" value="100"><div class="hint-text" id="noguess-thread-hint"></div></div><div class="custom-row" id="noguess-time-row" hidden><label for="noguess-time-seconds">生成时限</label><input id="noguess-time-seconds" type="number" min="0.1" step="0.1" value="6"></div></section><section class="settings-section"><div class="settings-label" data-icon="☰">偏好</div><div class="setting-list"><div class="toggle-row"><label for="toggle-dark">深色模式</label><label class="toggle-switch"><input type="checkbox" id="toggle-dark"><span class="toggle-track"></span></label></div><div class="toggle-row"><label for="toggle-sound">音效反馈</label><label class="toggle-switch"><input type="checkbox" id="toggle-sound" checked><span class="toggle-track"></span></label></div><div class="toggle-row"><label for="toggle-question">问号标记</label><label class="toggle-switch"><input type="checkbox" id="toggle-question"><span class="toggle-track"></span></label></div></div></section><section class="settings-section"><div class="settings-label" data-icon="↔">操作</div><div class="settings-buttons segmented"><button class="btn" data-set="actionMode" data-val="normal">常规</button><button class="btn" data-set="actionMode" data-val="swap">左右互换</button></div><div id="action-mode-hint" class="hint-text"></div></section><section class="settings-section"><div class="settings-label" data-icon="⟲">其他</div><div style="padding:0 16px 14px"><button class="btn" id="btn-reset-settings" style="width:100%;justify-content:center;color:var(--md-sys-color-error);border-color:var(--md-sys-color-error)">重置所有设置</button></div></section></div></div></div></div><div id="game-area"><div id="board-wrapper"><div id="board" role="grid" aria-label="扫雷棋盘"></div></div></div><div class="overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title"><div class="modal-content"><div class="modal-icon-wrap"><div id="modal-icon-circle" class="modal-icon-circle"><div id="modal-icon"></div></div></div><div class="modal-text-section"><div class="modal-badge-row" id="modal-badge"></div><h2 id="modal-title"></h2><p id="modal-message"></p></div><div class="modal-stats-section"><div id="modal-stats" class="modal-stats"></div></div><div class="modal-actions-section"><button class="btn btn-primary" id="btn-replay">再来一局</button><button class="btn" id="btn-undo-modal" disabled style="display:flex;justify-content:center;align-items:center;gap:6px">↶ 撤销最后一步</button><button class="btn btn-muted" id="btn-close-modal" aria-label="关闭">关闭</button></div></div></div><canvas id="confetti-canvas" aria-hidden="true"></canvas><div id="status-toast" aria-live="polite"></div>
+<script>
+const CONFIG = {
+easy:   { rows: 9,  cols: 9,  mines: 10 },
+medium: { rows: 16, cols: 16, mines: 40 },
+hard:   { rows: 16, cols: 30, mines: 99 },
+custom: { rows: 12, cols: 16, mines: 20 },
+random: { rows: 9,  cols: 9,  mines: 10 },
+};
+const SETTING_OPTIONS = {
+difficulty: ['easy','medium','hard','custom','random'],
+mode: ['traditional','noguess'],
+actionMode: ['normal','swap'],
+};
+const RESULT_SVG = {
+bomb: `<svg class="loss-icon-svg" viewBox="0 0 56 56" width="52" height="52" xmlns="http://www.w3.org/2000/svg">
+<g stroke="currentColor" stroke-linecap="round" stroke-width="2.5" opacity=".7">
+<line x1="28" y1="6" x2="28" y2="10"/><line x1="28" y1="46" x2="28" y2="50"/>
+<line x1="6" y1="28" x2="10" y2="28"/><line x1="46" y1="28" x2="50" y2="28"/>
+<line x1="11.5" y1="11.5" x2="14.4" y2="14.4"/>
+<line x1="44.5" y1="44.5" x2="41.6" y2="41.6"/>
+<line x1="44.5" y1="11.5" x2="41.6" y2="14.4"/>
+<line x1="11.5" y1="44.5" x2="14.4" y2="41.6"/>
+</g>
+<circle cx="28" cy="28" r="16" fill="currentColor"/>
+<ellipse cx="22" cy="22" rx="4.5" ry="2.8" fill="white" opacity=".28" transform="rotate(-38 22 22)"/>
+<circle cx="35" cy="21" r="1.8" fill="white" opacity=".18"/>
+</svg>`,
+check: `<svg class="win-icon-svg" viewBox="0 0 56 56" width="48" height="48" xmlns="http://www.w3.org/2000/svg">
+<polyline points="13,28 23,38 43,18" stroke="currentColor" stroke-width="5.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>`,
+};
+const HINT = {
+mode:{
+traditional:'传统模式：随机布雷，首次点击安全。',
+noguess:'无猜模式：保证全程无需猜测，依靠逻辑即可通关。',
+},
+actionMode:{
+normal:'左键翻格，右键（长按）插旗。',
+swap:'左键插旗，右键（长按）翻格。',
+},
+};
+const DIRS = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const ARROWS = {ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+const MAX_UNDO = 50;
+const LS = { settings:'minesweeper_settings', records:'minesweeper_records' };
+const DEFAULT_NOGUESS_TIME_SECONDS = 6;
+const SVG = {
+flag: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="currentColor"><path d="M5 21V4h9l.4 2H20v10h-7l-.4-2H7v7H5z"/></svg>`,
+mine: `<svg width="63%" height="63%" viewBox="0 0 24 24" fill="none"><g stroke="currentColor" stroke-linecap="round" stroke-width="1.9"><line x1="12" y1="1.5" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22.5"/><line x1="1.5" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22.5" y2="12"/><line x1="4.1" y1="4.1" x2="6.2" y2="6.2"/><line x1="17.8" y1="17.8" x2="19.9" y2="19.9"/><line x1="19.9" y1="4.1" x2="17.8" y2="6.2"/><line x1="6.2" y1="17.8" x2="4.1" y2="19.9"/></g><circle cx="12" cy="12" r="5.8" fill="currentColor"/><ellipse cx="9.8" cy="9.8" rx="1.6" ry="1" fill="white" opacity=".35" transform="rotate(-35 9.8 9.8)"/></svg>`,
+wrong: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+question: `<svg width="60%" height="60%" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2.2" stroke-linecap="round"><path d="M9 9a3 3 0 1 1 5.12 2.13C13.38 12 12 13 12 14"/><circle cx="12" cy="18" r="1" fill="#6366f1" stroke="none"/></svg>`,
+};
+const SOUND = {
+click:   () => tone({ freq:523, end:440, dur:.05, vol:.12 }),
+flag:    () => tone({ freq:660, end:523, dur:.08, vol:.13 }),
+undo:    () => tone({ freq:440, end:330, dur:.09, vol:.12 }),
+question:() => tone({ freq:784, end:988, dur:.07, vol:.11 }),
+explode: () => { noise(.15,.20,100); tone({ freq:90, end:30, dur:.25, vol:.18 }); },
+win:     () => [523,659,784,1047].forEach((f,i)=>tone({freq:f,dur:.14,vol:.17,delay:[0,.09,.18,.30][i]})),
+};
+
+const $ = id => document.getElementById(id);
+const syncViewportHeight=()=>document.documentElement.style.setProperty('--vvh',(window.visualViewport?.height||innerHeight)+'px');
+syncViewportHeight(); window.visualViewport?.addEventListener('resize',syncViewportHeight); window.visualViewport?.addEventListener('scroll',syncViewportHeight); addEventListener('resize',syncViewportHeight);
+const dom = {
+board:$('board'), area:$('game-area'), wrapper:$('board-wrapper'),
+mines:$('mine-count'), timerS:$('timer-s'), timerCs:$('timer-cs'), flags:$('flag-count'),
+modal:$('modal'), settings:$('settings-overlay'), toast:$('status-toast'),
+warning:$('warning-bar'), density:$('density-hint'), minesHint:$('mines-max-hint'),
+undoTop:$('btn-undo-topbar'), undoModal:$('btn-undo-modal'),
+modalIcon:$('modal-icon'), modalIconCircle:$('modal-icon-circle'),
+modalTitle:$('modal-title'), modalBadge:$('modal-badge'),
+modalStats:$('modal-stats'), modalMsg:$('modal-message'),
+progressBar:$('progress-bar'), progressContainer:$('progress-container'),
+confetti:$('confetti-canvas'),
+};
+
+
+const state = {
+difficulty:'medium', mode:'traditional', actionMode:'normal',
+rows:16, cols:16, mines:40,
+board:[], revealed:[], flagged:[], questioned:[],
+flagCount:0, revealedCount:0, nonMineCount:0,
+firstClick:true, placing:false, gameOver:false,
+timer:null, time:0, timeMs:0, timerStart:0, gameId:0,
+undo:[], hinted:[], settlement:null, cheated:false, undoUsed:false,
+bv3:0, usefulClicks:0,
+soundEnabled:true, questionMarkEnabled:false,
+noguessSpeed:100, noguessTimeSeconds:DEFAULT_NOGUESS_TIME_SECONDS,
+kbR:-1, kbC:-1,
+};
+const ui = {
+scale:1, minScale:.5, maxScale:4, offset:{x:0,y:0}, cellSize:30, cells:null,
+pan:null, pinch:null, moved:false, longPress:false, dragging:false,
+pressCancelled:false, ignoreMouse:false, wasPinching:false,
+touch:null, currentCell:null, chord:null, snap:null, audio:null,
+timers:{ save:null, modal:null, resize:null, toast:null, longPress:null, ignoreMouse:null },
+_areaRect:null, _wrapNatural:null,
+confettiFrame:null,
+};
+
+const make2d = (r,c,v) => Array.from({length:r},()=>Array(c).fill(v));
+const clamp = (v,min,max) => Math.min(max,Math.max(min,v));
+const isPlainObject = v => v && typeof v==='object' && !Array.isArray(v);
+const readJsonObject = raw => { try { const p=JSON.parse(raw||'{}'); return isPlainObject(p)?p:{}; } catch{return{};} };
+const storageGet = k => { try{return localStorage.getItem(k);}catch{return null;} };
+const storageSet = (k,v) => { try{localStorage.setItem(k,v);return true;}catch{return false;} };
+const storageRemove = k => { try{localStorage.removeItem(k);return true;}catch{return false;} };
+const clampInt = (value,fallback,min,max) => { const n=parseInt(value,10); return clamp(Number.isFinite(n)?n:fallback,min,max); };
+const validSetting = (name,value) => SETTING_OPTIONS[name]&&SETTING_OPTIONS[name].includes(value);
+const normalizeNoguessSpeed = v => clampInt(v,100,1,100);
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+
+const formatTime=s=>s<60?String(s):`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+function updateTimerDisplay() {
+dom.timerS.textContent = formatTime(state.time);
+dom.timerCs.textContent = state.gameOver || state.firstClick ? '' : '.' + String(Math.floor((state.timeMs%1000)/10)).padStart(2,'0');
+}
+
+function noguessSpeedProfile(value = state.noguessSpeed) {
+const s=normalizeNoguessSpeed(value), t=s/100, f=s>=100;
+return{speed:s,attemptDelay:s>=99?0:Math.round(140*(1-t)**2),
+maxVars:f?SOLVER.maxComponentVars:Math.round(14+t*(SOLVER.maxComponentVars-14)),
+maxSolutions:f?SOLVER.maxComponentSolutions:Math.round(15000+t*(SOLVER.maxComponentSolutions-15000))};
+}
+function syncNoguessSpeedUI(value = state.noguessSpeed) {
+const v=normalizeNoguessSpeed(value); state.noguessSpeed=v;
+const range=$('noguess-speed'), label=$('noguess-speed-value');
+range.value=v; label.textContent=`${v}%`;
+range.style.setProperty('--range-fill',`${v}%`);
+}
+const normalizeNoguessTimeSeconds=(v,f=DEFAULT_NOGUESS_TIME_SECONDS)=>{
+v=String(v??'').trim();v=Number(v);return Number.isFinite(v)&&v>0?v:f;
+}
+const markInputInvalid=(i,b)=>i&&(i.classList.toggle('invalid',b),i.setAttribute('aria-invalid',b?'true':'false'),i.setCustomValidity(b?'请输入大于 0 的数字':''));
+function syncNoguessTimeUI(value=state.noguessTimeSeconds){
+const i=$('noguess-time-seconds'),v=normalizeNoguessTimeSeconds(value,state.noguessTimeSeconds||DEFAULT_NOGUESS_TIME_SECONDS);
+state.noguessTimeSeconds=i.value=v;markInputInvalid(i,false);
+}
+function readNoguessTimeInput(input, normalize=false) {
+const n=Number(input.value.trim()), ok=Number.isFinite(n)&&n>0;
+state.noguessTimeSeconds=ok?n:DEFAULT_NOGUESS_TIME_SECONDS; markInputInvalid(input,!ok);
+if(!ok&&normalize)input.value=state.noguessTimeSeconds; saveSettings();
+}
+
+const normalizeConfig=(cfg,fallback=CONFIG.medium)=>{
+cfg=isPlainObject(cfg)?cfg:fallback;
+const rows=clampInt(cfg.rows,fallback.rows,5,100),cols=clampInt(cfg.cols,fallback.cols,5,100);
+return{rows,cols,mines:clampInt(cfg.mines,fallback.mines,1,Math.max(1,rows*cols-9))};
+}
+
+const key = (r,c) => r*state.cols+c;
+const cellEl = (r,c) => (ui.cells||dom.board.children)[key(r,c)];
+const cellRc = el => [+el.dataset.row,+el.dataset.col];
+const inBoard = (r,c) => r>=0&&r<state.rows&&c>=0&&c<state.cols;
+const isChordCell = (r,c) => state.revealed[r]&&state.revealed[r][c]&&state.board[r][c]>0;
+const tapAction = () => state.actionMode==='normal'?handleClick:toggleFlag;
+const holdAction = () => state.actionMode==='normal'?toggleFlag:handleClick;
+const eachNeighbor = (r,c,fn) => DIRS.forEach(([dr,dc])=>{ const nr=r+dr,nc=c+dc; if(inBoard(nr,nc))fn(nr,nc); });
+const neighbors = (r,c) => { const out=[]; eachNeighbor(r,c,(nr,nc)=>out.push({r:nr,c:nc})); return out; };
+const stopTimerId = name => { clearTimeout(ui.timers[name]); ui.timers[name]=null; };
+function nudgeIntoView(el, margin=40) {
+if(!el)return;
+const areaRect=dom.area.getBoundingClientRect(), cellRect=el.getBoundingClientRect();
+const dx=cellRect.left<areaRect.left+margin?areaRect.left+margin-cellRect.left:cellRect.right>areaRect.right-margin?areaRect.right-margin-cellRect.right:0;
+const dy=cellRect.top<areaRect.top+margin?areaRect.top+margin-cellRect.top:cellRect.bottom>areaRect.bottom-margin?areaRect.bottom-margin-cellRect.bottom:0;
+if(dx||dy){ui.offset.x+=dx;ui.offset.y+=dy;applyTransform();}
+}
+
+const resetInputState=()=>{
+stopTimerId('longPress');clearHints();ui.currentCell?.classList.remove('pressing');
+ui.touch=ui.currentCell=ui.mouseCell=ui.chord=null;ui.longPress=ui.dragging=ui.pressCancelled=false;
+}
+
+function toast(msg, ms=0) {
+stopTimerId('toast');
+dom.toast.textContent=msg; dom.toast.classList.add('show');
+if(ms)ui.timers.toast=setTimeout(()=>dom.toast.classList.remove('show'),ms);
+}
+const hideToast = () => { stopTimerId('toast'); dom.toast.classList.remove('show'); };
+const isBlocked = () => ['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)
+|| dom.settings.classList.contains('show') || dom.modal.classList.contains('show');
+
+function audioCtx() {
+const AC=window.AudioContext||window.webkitAudioContext;
+if(!AC)return null;
+if(!ui.audio||ui.audio.state==='closed')ui.audio=new AC();
+if(ui.audio.state==='suspended')ui.audio.resume().catch(()=>{});
+return ui.audio;
+}
+function tone({type='sine',freq=440,end=freq,dur=.08,vol=.2,delay=0}) {
+if(!state.soundEnabled)return;
+try {
+const ctx=audioCtx(); if(!ctx)return;
+const start=ctx.currentTime+delay, osc=ctx.createOscillator(), gain=ctx.createGain();
+osc.type=type; osc.connect(gain); gain.connect(ctx.destination);
+osc.frequency.setValueAtTime(freq,start);
+if(end!==freq)osc.frequency.exponentialRampToValueAtTime(end,start+dur);
+gain.gain.setValueAtTime(vol,start);
+gain.gain.exponentialRampToValueAtTime(.001,start+dur);
+osc.start(start); osc.stop(start+dur+.02);
+} catch{}
+}
+function noise(dur, vol=.3, cutoff=400) {
+if(!state.soundEnabled)return;
+try {
+const ctx=audioCtx(); if(!ctx)return;
+const len=Math.ceil(ctx.sampleRate*dur), buf=ctx.createBuffer(1,len,ctx.sampleRate);
+const data=buf.getChannelData(0);
+for(let i=0;i<len;i++)data[i]=Math.random()*2-1;
+const src=ctx.createBufferSource(), gain=ctx.createGain(), filter=ctx.createBiquadFilter();
+src.buffer=buf; filter.type='lowpass'; filter.frequency.value=cutoff;
+src.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+gain.gain.setValueAtTime(vol,ctx.currentTime);
+gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+dur);
+src.start(); src.stop(ctx.currentTime+dur+.02);
+} catch{}
+}
+function feedback(type) {
+try { navigator.vibrate?.({click:10,flag:25,undo:15,explode:[50,50,100],win:[30,50,30,50,100]}[type]||10); } catch{}
+if(SOUND[type])SOUND[type]();
+}
+
+function launchConfetti() {
+const canvas=dom.confetti;
+if(!canvas)return;
+if(ui.confettiFrame)cancelAnimationFrame(ui.confettiFrame);
+canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+canvas.style.display='block';
+const ctx=canvas.getContext('2d');
+const colors=['#f59e0b','#22c55e','#3b82f6','#ec4899','#8b5cf6','#ef4444','#06b6d4','#f97316'];
+const particles=Array.from({length:160},()=>({
+x: Math.random()*canvas.width,
+y: -20-Math.random()*100,
+r: 3+Math.random()*8,
+color: colors[Math.floor(Math.random()*colors.length)],
+vx: (Math.random()-.5)*6,
+vy: 1.5+Math.random()*4,
+angle: Math.random()*Math.PI*2,
+va: (Math.random()-.5)*.3,
+life: 1,
+decay: .004+Math.random()*.007,
+round: Math.random()>.5,
+}));
+function draw() {
+ctx.clearRect(0,0,canvas.width,canvas.height);
+let any=false;
+for(const p of particles) {
+p.x+=p.vx; p.y+=p.vy; p.vy+=0.08; p.angle+=p.va; p.life-=p.decay;
+if(p.y<canvas.height+20&&p.life>0) {
+any=true;
+ctx.save();
+ctx.globalAlpha=Math.min(1,p.life*1.5);
+ctx.translate(p.x,p.y); ctx.rotate(p.angle);
+ctx.fillStyle=p.color;
+if(p.round){ctx.beginPath();ctx.arc(0,0,p.r*.5,0,Math.PI*2);ctx.fill();}
+else ctx.fillRect(-p.r/2,-p.r*.3,p.r,p.r*.6);
+ctx.restore();
+}
+}
+ui.confettiFrame=any?requestAnimationFrame(draw):null;
+if(!any)canvas.style.display='none';
+}
+draw();
+}
+function stopConfetti() {
+if(ui.confettiFrame){cancelAnimationFrame(ui.confettiFrame);ui.confettiFrame=null;}
+if(dom.confetti)dom.confetti.style.display='none';
+}
+
+function updateProgressBar() {
+const total=state.nonMineCount||state.rows*state.cols-state.mines;
+const pct=total>0?Math.min(100,Math.round(state.revealedCount/total*100)):0;
+dom.progressBar.style.width=pct+'%';
+dom.progressBar.classList.toggle('full',pct>=100);
+dom.progressContainer.setAttribute('aria-valuenow',pct);
+}
+
+function _flushSettings() {
+const ok=storageSet(LS.settings,JSON.stringify({
+difficulty:state.difficulty, mode:state.mode, actionMode:state.actionMode,
+dark:document.body.classList.contains('dark'),
+soundEnabled:state.soundEnabled, questionMarkEnabled:state.questionMarkEnabled,
+customRows:CONFIG.custom.rows, customCols:CONFIG.custom.cols, customMines:CONFIG.custom.mines,
+noguessSpeed:state.noguessSpeed, noguessTimeSeconds:state.noguessTimeSeconds,
+}));
+if(!ok)toast('设置保存失败，可能是浏览器存储不可用',2500);
+}
+function saveSettings() {
+stopTimerId('save');
+ui.timers.save=setTimeout(_flushSettings,250);
+}
+function syncCustomInputs(cfg) {
+$('c-rows').value=cfg.rows; $('c-cols').value=cfg.cols; $('c-mines').value=cfg.mines;
+updateDensityHint();
+}
+function applyCustomConfig({selectDifficulty=false,shouldSave=true}={}) {
+const cfg=normalizeConfig({rows:$('c-rows').value,cols:$('c-cols').value,mines:$('c-mines').value});
+Object.assign(CONFIG.custom,cfg); syncCustomInputs(cfg);
+if(selectDifficulty)applySetting('difficulty','custom',false);
+if(shouldSave)saveSettings();
+return cfg;
+}
+function loadSettings() {
+const saved=readJsonObject(storageGet(LS.settings));
+const dark=saved.dark!==undefined?!!saved.dark:matchMedia('(prefers-color-scheme: dark)').matches;
+document.body.classList.toggle('dark',dark);
+$('toggle-dark').checked=dark;
+state.soundEnabled=saved.soundEnabled!==false;
+$('toggle-sound').checked=state.soundEnabled;
+state.questionMarkEnabled=!!saved.questionMarkEnabled;
+$('toggle-question').checked=state.questionMarkEnabled;
+syncNoguessSpeedUI(normalizeNoguessSpeed(saved.noguessSpeed));
+syncNoguessTimeUI(normalizeNoguessTimeSeconds(saved.noguessTimeSeconds??saved.noguessSeconds,DEFAULT_NOGUESS_TIME_SECONDS));
+syncCustomInputs(Object.assign(CONFIG.custom,normalizeConfig({rows:saved.customRows,cols:saved.customCols,mines:saved.customMines},CONFIG.custom)));
+['difficulty','mode','actionMode'].forEach(name=>applySetting(name,validSetting(name,saved[name])?saved[name]:state[name],false));
+}
+function resetAllSettings() {
+storageRemove(LS.settings);
+Object.assign(CONFIG.custom,{rows:12,cols:16,mines:20});
+const sysDark=matchMedia('(prefers-color-scheme: dark)').matches;
+document.body.classList.toggle('dark',sysDark); $('toggle-dark').checked=sysDark;
+state.soundEnabled=true; $('toggle-sound').checked=true;
+state.questionMarkEnabled=false; $('toggle-question').checked=false;
+syncNoguessSpeedUI(100); syncNoguessTimeUI(DEFAULT_NOGUESS_TIME_SECONDS);
+syncCustomInputs(CONFIG.custom);
+applySetting('difficulty','medium',false);
+applySetting('mode','traditional',false);
+applySetting('actionMode','normal',false);
+saveSettings();
+toast('已重置所有设置',1800);
+closeSettings();
+}
+function applySetting(name,value,shouldSave=true) {
+if(!validSetting(name,value))return;
+state[name]=value;
+document.querySelectorAll(`[data-set="${name}"]`).forEach(btn=>btn.classList.toggle('active',btn.dataset.val===value));
+if(name==='difficulty')$('custom-fields').classList.toggle('show',value==='custom');
+if(name==='mode') {
+$('mode-hint').textContent=HINT.mode[value];
+const isNoguess=value==='noguess';$('noguess-speed-row').hidden=!isNoguess;$('noguess-time-row').hidden=!isNoguess;
+if(value==='noguess'){syncNoguessSpeedUI(state.noguessSpeed);syncNoguessTimeUI(state.noguessTimeSeconds);}
+}
+if(name==='actionMode')$('action-mode-hint').textContent=HINT.actionMode[value];
+if(shouldSave)saveSettings();
+}
+function openSettings() {
+ui.snap={
+difficulty:state.difficulty, mode:state.mode,
+noguessSpeed:state.noguessSpeed, noguessTimeSeconds:state.noguessTimeSeconds,
+customParams:state.difficulty==='custom'?`${CONFIG.custom.rows},${CONFIG.custom.cols},${CONFIG.custom.mines}`:'',
+};
+dom.settings.classList.add('show');
+}
+function closeSettings() {
+dom.settings.classList.remove('show');
+let customChanged=false;
+if(state.difficulty==='custom') {
+const cfg=applyCustomConfig({shouldSave:false});
+customChanged=ui.snap?.difficulty==='custom'&&ui.snap?.customParams!==`${cfg.rows},${cfg.cols},${cfg.mines}`;
+}
+const diffModeChanged=!!ui.snap&&(ui.snap.difficulty!==state.difficulty||ui.snap.mode!==state.mode||ui.snap.noguessSpeed!==state.noguessSpeed||ui.snap.noguessTimeSeconds!==state.noguessTimeSeconds);
+ui.snap=null; saveSettings();
+if(diffModeChanged||customChanged)newGame();
+}
+
+let recordsCache=null;
+const rawRecords=()=>storageGet(LS.records);
+const toCount=v=>Math.max(0,parseInt(v,10)||0);
+function normalizeStats(v) {
+const s=isPlainObject(v)?v:{};
+return{wins:toCount(s.wins),total:toCount(s.total),streak:toCount(s.streak),bestStreak:toCount(s.bestStreak)};
+}
+const records=()=>recordsCache||(recordsCache=readJsonObject(rawRecords()));
+function writeRecords(data) {
+const customKeys=Object.keys(data).filter(x=>x.startsWith('custom_')&&!x.endsWith('_stats'));
+while(customKeys.length>30){const old=customKeys.shift();delete data[old];delete data[old+'_stats'];}
+try{ const raw=JSON.stringify(data); if(storageSet(LS.records,raw))recordsCache=data; }catch{}
+}
+const diffRecordKey=()=>state.difficulty!=='custom'?state.difficulty:`custom_${state.rows}x${state.cols}x${state.mines}`;
+function restoreRecords(raw) {
+try{ const ok=raw===null?storageRemove(LS.records):storageSet(LS.records,raw); if(ok)recordsCache=raw?readJsonObject(raw):null; }catch{}
+}
+function settleGame(won) {
+if(state.settlement)return state.settlement;
+const dk=diffRecordKey(), k=dk+'_stats', data=records(), st=normalizeStats(data[k]);
+const prev=isPlainObject(data[dk])?data[dk]:null;
+const beforeRaw=rawRecords();
+const commitSettlement=(result)=>{const fresh=readJsonObject(rawRecords());fresh[k]=st;if(data[dk]!==prev)fresh[dk]=data[dk];writeRecords(fresh);return (state.settlement=result);};
+if(state.cheated) {
+if(!won)st.streak=0;
+const cheatInfo={cheated:true,undoUsed:state.undoUsed};
+return commitSettlement(won?{won,beforeRaw:null,...cheatInfo,result:{isNew:false,best:prev,stats:st}}:{won,beforeRaw:null,...cheatInfo,result:st});
+}
+st.total++;
+if(won) {
+st.wins++;st.streak++;st.bestStreak=Math.max(st.bestStreak,st.streak);
+const pt=prev?parseInt(prev.time,10):NaN, isNew=!prev||!Number.isFinite(pt)||state.time<pt;
+if(isNew)data[dk]={time:state.time,date:new Date().toLocaleDateString('zh-CN')};
+return commitSettlement({won,beforeRaw,result:{isNew,best:data[dk],stats:st}});
+}
+st.streak=0;
+return commitSettlement({won,beforeRaw,result:st});
+}
+window.addEventListener('storage',e=>{if(e.key===LS.records)recordsCache=null;});
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',e=>{
+const saved=readJsonObject(storageGet(LS.settings));
+if(saved.dark!==undefined)return;
+document.body.classList.toggle('dark',e.matches);
+$('toggle-dark').checked=e.matches;
+});
+
+function applyTransform() {
+dom.wrapper.style.transform=`translate3d(${ui.offset.x}px,${ui.offset.y}px,0) scale(${ui.scale})`;
+}
+const resetView=()=>{
+ui.scale=1;
+ui.offset={x:0,y:0};
+ui._areaRect=null;
+ui._wrapNatural=null;
+applyTransform();
+};
+const stopPan=()=>{ui.pan=null;ui.moved=false;dom.wrapper.classList.remove('dragging');};
+
+function adjustBoardSize() {
+const gap=clamp(parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--board-gap'))||2,0,8);
+const aStyle=getComputedStyle(dom.area), wStyle=getComputedStyle(dom.wrapper);
+const xPad=parseFloat(aStyle.paddingLeft)+parseFloat(aStyle.paddingRight)+parseFloat(wStyle.paddingLeft)+parseFloat(wStyle.paddingRight);
+const yPad=parseFloat(aStyle.paddingTop)+parseFloat(aStyle.paddingBottom)+parseFloat(wStyle.paddingTop)+parseFloat(wStyle.paddingBottom);
+const areaW=Math.max(240,dom.area.clientWidth-xPad);
+const areaH=Math.max(240,dom.area.clientHeight-yPad);
+const rawW=(areaW-(state.cols-1)*gap)/state.cols;
+const rawH=(areaH-(state.rows-1)*gap)/state.rows;
+const raw=Math.floor(Math.min(rawW,rawH));
+const small=window.innerWidth<640;
+const minSize=small?24:28;
+const maxSize=small?46:56;
+ui.cellSize=clamp(Number.isFinite(raw)?raw:30,minSize,maxSize);
+const board=dom.board;
+board.style.setProperty('--cell-size',`${ui.cellSize}px`);
+board.style.setProperty('--cell-font',`${Math.max(11,Math.round(ui.cellSize*.56))}px`);
+board.style.setProperty('--radius-cell',`${clamp(Math.round(ui.cellSize*.22),4,10)}px`);
+board.style.gridTemplateColumns=`repeat(${state.cols},${ui.cellSize}px)`;
+board.style.gap=`${gap}px`;
+resetView();
+}
+const RANDOM_PRESETS = [
+{ w: 36, rows: [8, 10],  cols: [8, 12],  density: [.10, .14] },
+{ w: 34, rows: [10, 14], cols: [10, 16], density: [.11, .16] },
+{ w: 22, rows: [13, 16], cols: [16, 22], density: [.13, .18] },
+{ w: 8,  rows: [16, 20], cols: [22, 28], density: [.14, .20] },
+];
+const randInt = (min, max) => min + Math.floor(Math.random() * (max - min + 1));
+const randFloat = (min, max) => min + Math.random() * (max - min);
+function pickWeighted(list) {
+const total = list.reduce((sum, item) => sum + item.w, 0);
+let n = Math.random() * total;
+for (const item of list) if ((n -= item.w) <= 0) return item;
+return list[list.length - 1];
+}
+const randomizeConfig = () => {
+const p = pickWeighted(RANDOM_PRESETS);
+const rows = randInt(...p.rows), cols = randInt(...p.cols), total = rows * cols;
+const mines = clamp(Math.round(total * randFloat(...p.density)), Math.max(1, Math.round(total * .09)), Math.min(total - 9, 99));
+CONFIG.random = { rows, cols, mines };
+}
+
+function newGame() {
+hideToast(); stopConfetti(); _terminateWorker();
+dom.warning.hidden=true; stopTimerId('modal');
+if(state.difficulty==='random')randomizeConfig();
+const cfg=normalizeConfig(CONFIG[state.difficulty]||CONFIG.medium);
+Object.assign(state,{
+rows:cfg.rows, cols:cfg.cols, mines:cfg.mines,
+board:make2d(cfg.rows,cfg.cols,0),
+revealed:make2d(cfg.rows,cfg.cols,false),
+flagged:make2d(cfg.rows,cfg.cols,false),
+questioned:make2d(cfg.rows,cfg.cols,false),
+flagCount:0, revealedCount:0, nonMineCount:0,
+firstClick:true, placing:false, gameOver:false,
+time:0, timeMs:0, timerStart:0,
+undo:[], hinted:[], settlement:null, cheated:false, undoUsed:false,
+bv3:0, usefulClicks:0,
+kbR:-1, kbC:-1, gameId:state.gameId+1, actualMode:state.mode,
+});
+stopTimer(); stopPan(); resetInputState();
+renderBoard(); adjustBoardSize(); updateStats();
+syncUndoButton(); updateProgressBar();
+}
+
+const prepareCell=(cell,r,c)=>{
+cell.className='cell'; cell._sig='';
+cell.dataset.row=r; cell.dataset.col=c; cell.setAttribute('role','gridcell');
+cell.setAttribute('aria-rowindex',r+1); cell.setAttribute('aria-colindex',c+1);
+}
+function renderBoard() {
+const total=state.rows*state.cols;
+const sizeChanged=dom.board.children.length!==total||dom.board.dataset.rows!=state.rows||dom.board.dataset.cols!=state.cols;
+dom.board.setAttribute('aria-rowcount',state.rows);
+dom.board.setAttribute('aria-colcount',state.cols);
+dom.board.setAttribute('aria-label',`${state.rows}×${state.cols} ${state.mines}雷`);
+if(sizeChanged) {
+const frag=document.createDocumentFragment();
+for(let i=0;i<total;i++)frag.appendChild(document.createElement('div'));
+dom.board.replaceChildren(frag);
+dom.board.dataset.rows=state.rows;
+dom.board.dataset.cols=state.cols;
+}
+ui.cells=dom.board.children;
+for(let r=0;r<state.rows;r++) for(let c=0;c<state.cols;c++){
+const cell=cellEl(r,c);
+if(sizeChanged)prepareCell(cell,r,c);
+updateCell(r,c);
+}
+dom.wrapper.style.animation='none';
+requestAnimationFrame(()=>{dom.wrapper.style.animation='board-in .18s var(--md-ease)';});
+}
+function updateCell(r,c,animClass='') {
+const cell=cellEl(r,c);
+if(!cell)return;
+const v=state.board[r][c], hasKb=cell.classList.contains('kb-focus');
+let cls='cell', content='', label='未翻开', html=false;
+if(state.flagged[r][c]){cls+=' flagged';label='已插旗';}
+else if(state.questioned[r][c]){cls+=' questioned';content=SVG.question;label='问号标记';html=true;}
+else if(state.revealed[r][c]){
+cls+=' revealed';
+if(v===-1){cls+=' mine-show';content=SVG.mine;label='雷';html=true;}
+else if(v>0){cls+=` num-${v}`;content=String(v);label=content;}
+else label='0';
+}
+if(hasKb)cls+=' kb-focus';
+const nextSig=label+'|'+content+'|'+cls;
+if(!animClass && cell._sig===nextSig)return;
+cell._sig=nextSig;
+cell.className=animClass?cls+' '+animClass:cls;
+if(html)cell.innerHTML=content;
+else cell.textContent=content;
+cell.setAttribute('aria-label',label);
+if(animClass)cell.addEventListener('animationend',()=>cell.classList.remove(animClass),{once:true});
+}
+const refreshBoard=()=>{for(let r=0;r<state.rows;r++)for(let c=0;c<state.cols;c++)updateCell(r,c);};
+
+function beginPress(r,c) {
+const pressGameId=state.gameId;
+ui.longPress=false; ui.dragging=false; ui.pressCancelled=false; ui.chord=null;
+if(isChordCell(r,c)){showChordHints(r,c);ui.chord=[r,c];return;}
+ui.timers.longPress=setTimeout(()=>{
+if(state.gameId!==pressGameId||state.gameOver||state.placing||ui.dragging||ui.moved)return;
+ui.longPress=true; holdAction()(r,c);
+},350);
+}
+const cancelPress=(cancelTap=false)=>{
+stopTimerId('longPress');if(cancelTap)ui.pressCancelled=true;ui.chord=null;clearHints();
+}
+function finishTap(r,c) {
+stopTimerId('longPress'); clearHints();
+if(ui.pressCancelled){ui.pressCancelled=false;return;}
+if(inBoard(r,c)){state.kbR=r;state.kbC=c;}
+if(ui.chord){ui.chord=null;doChord(r,c);}
+else if(!ui.longPress&&!ui.dragging&&!ui.moved){
+const action=state.firstClick?handleClick:tapAction();
+action(r,c);
+}
+}
+
+dom.board.addEventListener('mousedown',e=>{
+const cell=e.target.closest('.cell');
+if(!cell||state.gameOver||state.placing||ui.ignoreMouse)return;
+const[r,c]=cellRc(cell); ui.mouseCell=[r,c];
+if(e.button===1){e.preventDefault();doChord(r,c);return;}
+if(e.button===2)holdAction()(r,c);
+if(e.button===0)beginPress(r,c);
+});
+dom.board.addEventListener('mouseup',e=>{
+if(e.button!==0||!ui.mouseCell||state.gameOver||ui.ignoreMouse)return;
+const[r,c]=ui.mouseCell; ui.mouseCell=null; finishTap(r,c);
+});
+dom.board.addEventListener('mouseout',e=>{
+const from=e.target.closest('.cell');
+if(from&&from!==(e.relatedTarget?.closest?.('.cell'))){ui.mouseCell=null;cancelPress(true);}
+});
+dom.board.addEventListener('contextmenu',e=>e.preventDefault());
+dom.board.addEventListener('touchstart',e=>{
+ui.touch=null;
+if(state.gameOver||state.placing||ui.pan)return;
+if(e.touches.length!==1){ui.wasPinching=true;if(ui.currentCell)ui.currentCell.classList.remove('pressing');cancelPress(true);return;}
+ui.wasPinching=false;
+const t=e.touches[0], cell=t.target.closest('.cell');
+if(!cell)return;
+const[r,c]=cellRc(cell);
+ui.touch={x:t.clientX,y:t.clientY,r,c}; ui.currentCell=cell;
+cell.classList.add('pressing'); beginPress(r,c);
+if(ui.chord)cell.classList.remove('pressing');
+},{passive:true});
+dom.board.addEventListener('touchmove',e=>{
+if(!ui.touch||state.gameOver||state.placing||ui.longPress||ui.pan||ui.moved){
+stopTimerId('longPress');
+if(ui.currentCell)ui.currentCell.classList.remove('pressing');
+return;
+}
+const t=e.touches[0];
+if(!t||(Math.abs(t.clientX-ui.touch.x)<=15&&Math.abs(t.clientY-ui.touch.y)<=15))return;
+ui.dragging=true;
+if(ui.currentCell)ui.currentCell.classList.remove('pressing');
+ui.currentCell=null; stopTimerId('longPress');
+startPan(t.clientX,t.clientY); ui.moved=true;
+},{passive:true});
+dom.board.addEventListener('touchend',()=>{
+if(ui.currentCell)ui.currentCell.classList.remove('pressing');
+ui.ignoreMouse=true; stopTimerId('ignoreMouse');
+ui.timers.ignoreMouse=setTimeout(()=>ui.ignoreMouse=false,500);
+if(ui.touch&&!ui.dragging&&!ui.moved&&!ui.wasPinching)finishTap(ui.touch.r,ui.touch.c);
+else cancelPress();
+ui.touch=null;
+});
+dom.board.addEventListener('touchcancel',()=>{
+if(ui.currentCell)ui.currentCell.classList.remove('pressing');
+ui.touch=null; cancelPress(true);
+});
+
+function showChordHints(r,c) {
+const nbrs=neighbors(r,c);
+const cls=nbrs.filter(n=>state.flagged[n.r][n.c]).length===state.board[r][c]?'hint':'hint-dim';
+nbrs.forEach(n=>{
+if(!state.revealed[n.r][n.c]&&!state.flagged[n.r][n.c]) {
+const el=cellEl(n.r,n.c); if(el){el.classList.add(cls);state.hinted.push(el);}
+}
+});
+}
+function clearHints() {
+state.hinted.forEach(el=>el.classList.remove('hint','hint-dim'));
+state.hinted=[];
+}
+function doChord(r,c) {
+if(!isChordCell(r,c))return;
+const nbrs=neighbors(r,c),flags=nbrs.filter(n=>state.flagged[n.r][n.c]).length;
+if(flags!==state.board[r][c])return;
+const targets=nbrs.filter(n=>!state.revealed[n.r][n.c]&&!state.flagged[n.r][n.c]);
+if(!targets.length)return;
+feedback('click'); pushUndo();
+state.usefulClicks++;
+targets.forEach(n=>!state.gameOver&&revealCell(n.r,n.c));
+if(!state.gameOver)checkWin();
+}
+
+const canUndo=()=>!state.firstClick&&!state.placing&&state.undo.length>0;
+function flatCapture() {
+const R=state.rows,C=state.cols,N=R*C;
+const rev=new Uint8Array(N),fl=new Uint8Array(N),qu=new Uint8Array(N);
+for(let r=0;r<R;r++) for(let c=0;c<C;c++){const i=r*C+c;rev[i]=state.revealed[r][c]?1:0;fl[i]=state.flagged[r][c]?1:0;qu[i]=state.questioned[r][c]?1:0;}
+return{rev,fl,qu};
+}
+function pushUndo() {
+if(state.firstClick)return;
+const{rev,fl,qu}=flatCapture();
+state.undo.push({revealed:rev,flagged:fl,questioned:qu,
+flagCount:state.flagCount,revealedCount:state.revealedCount,mines:state.mines,
+usefulClicks:state.usefulClicks,
+time:state.time,timeMs:state.timeMs,timerStart:state.timerStart,gameOver:state.gameOver});
+if(state.undo.length>MAX_UNDO)state.undo.shift();
+syncUndoButton();
+}
+function doUndo() {
+if(!canUndo())return;
+stopTimerId('modal');
+const snap=state.undo.pop(), wasOver=state.gameOver;
+if(wasOver&&!snap.gameOver&&state.settlement) {
+if(!state.settlement.cheated)restoreRecords(state.settlement.beforeRaw);
+state.settlement=null;
+}
+state.cheated=true; state.undoUsed=true;
+const canDiff=!wasOver&&snap.revealedCount>0;
+const{rev:prevRev,fl:prevFl,qu:prevQu}=canDiff?flatCapture():{};
+state.flagCount=snap.flagCount; state.revealedCount=snap.revealedCount;
+state.mines=snap.mines; state.usefulClicks=snap.usefulClicks??state.usefulClicks;
+state.time=snap.time; state.timeMs=snap.timeMs;
+state.timerStart=snap.timerStart; state.gameOver=snap.gameOver;
+const R=state.rows,C=state.cols;
+for(let r=0;r<R;r++) for(let c=0;c<C;c++){const i=r*C+c;state.revealed[r][c]=snap.revealed[i]===1;state.flagged[r][c]=snap.flagged[i]===1;state.questioned[r][c]=snap.questioned[i]===1;}
+if(wasOver&&!snap.gameOver)dom.modal.classList.remove('show');
+if(snap.revealedCount===0){state.firstClick=true;state.board=make2d(R,C,0);stopTimer();state.time=0;state.timeMs=0;}
+else if(wasOver&&!snap.gameOver){stopTimer();startTimer();}
+else if(state.timer){state.timerStart=Date.now()-(snap.timeMs||snap.time*1000);}
+clearHints();
+if(canDiff){
+for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+const i=r*C+c;
+if(prevRev[i]!==snap.revealed[i]||prevFl[i]!==snap.flagged[i]||prevQu[i]!==snap.questioned[i])updateCell(r,c);
+}
+} else refreshBoard();
+updateStats(); syncUndoButton(); updateProgressBar(); feedback('undo');
+}
+function syncUndoButton() {
+const ok=canUndo(); dom.undoTop.disabled=!ok; dom.undoModal.disabled=!ok;
+}
+function toggleFlag(r,c) {
+if(state.firstClick||state.revealed[r][c]||state.placing)return;
+pushUndo();
+if(!state.flagged[r][c]&&!state.questioned[r][c]){
+state.flagged[r][c]=true; state.flagCount++; feedback('flag');
+updateCell(r,c,'anim-flag');
+} else if(state.flagged[r][c]){
+state.flagged[r][c]=false; state.flagCount=Math.max(0,state.flagCount-1);
+if(state.questionMarkEnabled){state.questioned[r][c]=true;feedback('question');}
+else feedback('undo');
+updateCell(r,c,'anim-unflag');
+} else {
+state.questioned[r][c]=false; feedback('undo'); updateCell(r,c);
+}
+updateStats();
+}
+async function handleClick(r,c) {
+if(state.flagged[r][c]||state.revealed[r][c]||state.placing)return;
+const wasFirstClick=state.firstClick;
+if(wasFirstClick) {
+const gameId=state.gameId; state.firstClick=false; state.placing=true;
+audioCtx();
+try { await placeMines(r,c,gameId); }
+catch (err) {
+if(state.gameId!==gameId)return;
+hideToast();
+dom.warning.hidden=false; state.actualMode='traditional';
+generateBoard(safeZone(r,c));
+} finally {
+if(state.gameId===gameId)state.placing=false;
+}
+if(state.gameId!==gameId)return;
+startTimer(); updateStats();
+}
+feedback('click');
+if(!wasFirstClick)pushUndo();
+state.usefulClicks++;
+revealCell(r,c);
+if(!state.gameOver)checkWin();
+}
+function revealCell(r,c) {
+if(!inBoard(r,c)||state.revealed[r][c]||state.flagged[r][c])return;
+const queue=[[r,c,0]];
+state.revealed[r][c]=true; state.questioned[r][c]=false;
+for(let i=0;i<queue.length;i++){
+const[cr,cc,depth]=queue[i];
+if(state.board[cr][cc]===-1){updateCell(cr,cc,'anim-explode');return endGame(false,cr,cc);}
+state.revealedCount++;
+if(state.board[cr][cc]!==0)continue;
+eachNeighbor(cr,cc,(nr,nc)=>{
+if(state.revealed[nr][nc]||state.flagged[nr][nc])return;
+state.revealed[nr][nc]=true; state.questioned[nr][nc]=false;
+queue.push([nr,nc,depth+1]);
+});
+}
+const maxDelay=queue.length>30?80:40, maxDepth=queue.reduce((m,[,,d])=>Math.max(m,d),0)||1;
+for(const[cr,cc,d] of queue){
+const el=cellEl(cr,cc);
+if(el)el.style.setProperty('--reveal-delay',Math.round(d/maxDepth*maxDelay)+'ms');
+updateCell(cr,cc,'anim-reveal');
+}
+updateProgressBar();
+}
+
+const safeZone=(r,c)=>{const s=new Set([r*state.cols+c]);eachNeighbor(r,c,(nr,nc)=>s.add(nr*state.cols+nc));return s;};
+function generateBoard(safe) {
+const R=state.rows,C=state.cols,total=R*C, board=state.board;
+for(let r=0;r<R;r++)board[r].fill(0);
+const cells=new Int32Array(total-safe.size);
+let len=0;
+for(let i=0;i<total;i++)if(!safe.has(i))cells[len++]=i;
+const count=Math.min(state.mines,len);
+if(count!==state.mines)state.mines=count;
+for(let i=0;i<count;i++){
+const j=i+Math.floor(Math.random()*(len-i)), idx=cells[j];
+cells[j]=cells[i]; cells[i]=idx;
+const r=Math.floor(idx/C), c=idx%C;
+board[r][c]=-1;
+eachNeighbor(r,c,(nr,nc)=>{if(board[nr][nc]!==-1)board[nr][nc]++;});
+}
+state.nonMineCount=total-count;
+state.bv3=computeBV3();
+}
+function computeBV3(){
+const R=state.rows,C=state.cols,board=state.board,visited=make2d(R,C,false);
+let bv3=0;
+for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+if(board[r][c]!==0||visited[r][c])continue;
+bv3++;
+const queue=[[r,c]]; visited[r][c]=true;
+for(let i=0;i<queue.length;i++){
+const[cr,cc]=queue[i];
+eachNeighbor(cr,cc,(nr,nc)=>{
+if(visited[nr][nc]||board[nr][nc]===-1)return;
+visited[nr][nc]=true;
+if(board[nr][nc]===0)queue.push([nr,nc]);
+});
+}
+}
+for(let r=0;r<R;r++) for(let c=0;c<C;c++){
+if(!visited[r][c]&&board[r][c]!==-1)bv3++;
+}
+return bv3;
+}
+
+const SOLVER = { maxComponentVars:22, maxComponentSolutions:60000 };
+const _mkSolverWorker=(function(){
+function _scope(){    const DIRS=[[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+const make2d=(r,c,v)=>Array.from({length:r},()=>Array(c).fill(v));
+const inBoard=(r,c,rows,cols)=>r>=0&&r<rows&&c>=0&&c<cols;
+const eachNeighbor=(r,c,rows,cols,fn)=>DIRS.forEach(([dr,dc])=>{const nr=r+dr,nc=c+dc;if(inBoard(nr,nc,rows,cols))fn(nr,nc);});
+function enumerateComponent(globalVars,globalCons,constraints,maxSolutions){
+const localOf=new Map();
+globalVars.forEach((vi,i)=>localOf.set(vi,i));
+const cons=globalCons.map(ci=>({need:constraints[ci].need,vars:constraints[ci].vars.map(vi=>localOf.get(vi)).filter(v=>v!==undefined)}));
+const n=globalVars.length;
+const varToCons=Array.from({length:n},()=>[]);
+cons.forEach((con,ci)=>con.vars.forEach(vi=>varToCons[vi].push(ci)));
+const order=Array.from({length:n},(_,i)=>i).sort((a,b)=>varToCons[b].length-varToCons[a].length);
+const assignment=new Int8Array(n),placed=cons.map(()=>0),unknown=cons.map(con=>con.vars.length),mineCounts=new Int32Array(n);
+let solutions=0,incomplete=false;
+function assign(depth){
+if(incomplete)return;
+if(depth===order.length){solutions++;for(let i=0;i<n;i++)mineCounts[i]+=assignment[i];if(solutions>=maxSolutions)incomplete=true;return;}
+const vi=order[depth];
+for(let val=0;val<2;val++){
+assignment[vi]=val;let ok=true;
+for(const ci of varToCons[vi]){unknown[ci]--;placed[ci]+=val;const con=cons[ci];if(placed[ci]>con.need||placed[ci]+unknown[ci]<con.need)ok=false;}
+if(ok)assign(depth+1);
+for(const ci of varToCons[vi]){unknown[ci]++;placed[ci]-=val;}
+if(incomplete)return;
+}
+}
+assign(0);
+return{invalid:solutions===0,incomplete,solutions,mineCounts};
+}
+function findCspCertainMoves(board,opened,marked,rows,cols,maxVars,maxSolutions){
+const varIndex=new Map(),vars=[],constraints=[];
+const addVar=k=>{if(!varIndex.has(k)){varIndex.set(k,vars.length);vars.push(k);}return varIndex.get(k);};
+for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+if(!opened[r][c]||board[r][c]<=0)continue;
+let flags=0;const unknown=[];
+eachNeighbor(r,c,rows,cols,(nr,nc)=>{if(marked[nr][nc])flags++;else if(!opened[nr][nc])unknown.push(nr*cols+nc);});
+const need=board[r][c]-flags;
+if(need<0||need>unknown.length)return{safe:[],mines:[],invalid:true};
+if(!unknown.length)continue;
+constraints.push({need,vars:unknown.map(addVar)});
+}
+if(!vars.length)return{safe:[],mines:[],invalid:false};
+const varToCons=Array.from({length:vars.length},()=>[]);
+constraints.forEach((con,ci)=>con.vars.forEach(vi=>varToCons[vi].push(ci)));
+const visitedVar=new Uint8Array(vars.length),visitedCon=new Uint8Array(constraints.length);
+const safeSet=new Set(),mineSet=new Set();
+for(let start=0;start<vars.length;start++){
+if(visitedVar[start])continue;
+const compVars=[],compCons=[],queueV=[start],queueC=[];
+visitedVar[start]=1;
+while(queueV.length||queueC.length){
+while(queueV.length){const vi=queueV.pop();compVars.push(vi);for(const ci of varToCons[vi])if(!visitedCon[ci]){visitedCon[ci]=1;queueC.push(ci);}}
+while(queueC.length){const ci=queueC.pop();compCons.push(ci);for(const vi of constraints[ci].vars)if(!visitedVar[vi]){visitedVar[vi]=1;queueV.push(vi);}}
+}
+if(compVars.length>maxVars)continue;
+const result=enumerateComponent(compVars,compCons,constraints,maxSolutions);
+if(result.invalid)return{safe:[],mines:[],invalid:true};
+if(result.incomplete)continue;
+for(let i=0;i<compVars.length;i++){const k=vars[compVars[i]];if(result.mineCounts[i]===0)safeSet.add(k);else if(result.mineCounts[i]===result.solutions)mineSet.add(k);}
+}
+return{safe:[...safeSet].filter(k=>!mineSet.has(k)).map(k=>[Math.floor(k/cols),k%cols]),mines:[...mineSet].map(k=>[Math.floor(k/cols),k%cols]),invalid:false};
+}
+function canSolveWithoutGuess(board,rows,cols,mines,startR,startC,maxVars,maxSolutions){
+const total=rows*cols;
+const opened=make2d(rows,cols,false),marked=make2d(rows,cols,false);
+let openedCount=0,markedCount=0;
+const frontier=new Set();
+const addFrontierNeighbors=(r,c)=>{eachNeighbor(r,c,rows,cols,(nr,nc)=>{if(opened[nr][nc]&&board[nr][nc]>0)frontier.add(nr*cols+nc);});};
+const hiddenNeighbors=(r,c)=>{const out=[];eachNeighbor(r,c,rows,cols,(nr,nc)=>{if(!opened[nr][nc]&&!marked[nr][nc])out.push([nr,nc]);});return out;};
+const markedAround=(r,c)=>{let n=0;eachNeighbor(r,c,rows,cols,(nr,nc)=>n+=marked[nr][nc]?1:0);return n;};
+const openSim=(r,c,_col)=>{
+if(!inBoard(r,c,rows,cols)||opened[r][c]||marked[r][c])return true;
+if(board[r][c]===-1)return false;
+opened[r][c]=true;openedCount++;if(_col)_col.push(r*cols+c);
+const queue=[[r,c]];
+for(let i=0;i<queue.length;i++){
+const[cr,cc]=queue[i];
+if(board[cr][cc]>0)frontier.add(cr*cols+cc);
+addFrontierNeighbors(cr,cc);
+if(board[cr][cc]!==0)continue;
+for(const[dr,dc]of DIRS){
+const nr=cr+dr,nc=cc+dc;
+if(!inBoard(nr,nc,rows,cols)||opened[nr][nc]||marked[nr][nc])continue;
+if(board[nr][nc]===-1)return false;
+opened[nr][nc]=true;openedCount++;if(_col)_col.push(nr*cols+nc);
+queue.push([nr,nc]);
+}
+}
+return true;
+};
+const markSim=(r,c)=>{if(!inBoard(r,c,rows,cols)||opened[r][c]||marked[r][c])return false;marked[r][c]=true;markedCount++;addFrontierNeighbors(r,c);return true;};
+if(!openSim(startR,startC))return false;
+const unknownSet=new Set();
+for(let r=0;r<rows;r++) for(let c=0;c<cols;c++) if(!opened[r][c]&&!marked[r][c])unknownSet.add(r*cols+c);
+const _openSim=(r,c)=>{const _col=[];if(!openSim(r,c,_col))return false;for(const idx of _col)unknownSet.delete(idx);return true;};
+const _markSim=(r,c)=>{if(!markSim(r,c))return false;unknownSet.delete(r*cols+c);return true;};
+for(let guard=0;guard<total*4;guard++){
+if(openedCount>=total-mines)return true;
+let progress=false;
+const remainingMines=mines-markedCount,unknownSize=unknownSet.size;
+if(remainingMines<0||remainingMines>unknownSize)return false;
+if(remainingMines===0){for(const idx of unknownSet){const p=Math.floor(idx/cols),q=idx%cols;if(!_openSim(p,q))return false;progress=true;}if(progress)continue;}
+if(unknownSize&&remainingMines===unknownSize){for(const idx of unknownSet){const p=Math.floor(idx/cols),q=idx%cols;progress=_markSim(p,q)||progress;}if(progress)continue;}
+const toCheck=[...frontier];frontier.clear();
+for(const key of toCheck){
+const r=Math.floor(key/cols),c=key%cols;
+if(!opened[r][c]||board[r][c]<=0)continue;
+const hidden=hiddenNeighbors(r,c);const need=board[r][c]-markedAround(r,c);
+if(need<0||need>hidden.length)return false;
+if(!hidden.length)continue;
+if(need===0){for(const[p,q]of hidden){if(!_openSim(p,q))return false;progress=true;}}
+else if(need===hidden.length){for(const[p,q]of hidden)progress=_markSim(p,q)||progress;}
+}
+if(progress)continue;
+const csp=findCspCertainMoves(board,opened,marked,rows,cols,maxVars,maxSolutions);
+if(csp.invalid)return false;
+for(const[p,q]of csp.mines)progress=_markSim(p,q)||progress;
+for(const[p,q]of csp.safe){if(!_openSim(p,q))return false;progress=true;}
+if(!progress)return false;
+}
+return openedCount>=total-mines;
+}
+self.onmessage=function(e){
+const{board,rows,cols,mines,startR,startC,maxVars,maxSolutions}=e.data;
+self.postMessage({result:canSolveWithoutGuess(board,rows,cols,mines,startR,startC,maxVars,maxSolutions)});
+};
+}
+const _workerUrl=(()=>{const b=new Blob(['('+_scope.toString()+')()'],{type:'application/javascript'});return URL.createObjectURL(b);})();
+addEventListener('pagehide',()=>URL.revokeObjectURL(_workerUrl),{once:true});
+return ()=>new Worker(_workerUrl);
+})();
+// 保留 1 个核心给主线程保证 UI 流畅，其余全部用于并行求解，保底 2，上限 16
+const POOL_SIZE=clamp((navigator.hardwareConcurrency||4)-1,2,16);
+let _workerPool=null;
+const _poolResolves=new Array(POOL_SIZE).fill(null);
+function _getPool(){
+if(_workerPool)return _workerPool;
+_workerPool=Array.from({length:POOL_SIZE},(_,i)=>{
+const w=_mkSolverWorker();
+w.onmessage=e=>{_poolResolves[i]?.(e.data.result);_poolResolves[i]=null;};
+w.onerror  =()=>{_poolResolves[i]?.(false);        _poolResolves[i]=null;};
+return w;
+});
+return _workerPool;
+}
+function _terminateWorker(){
+const n=_poolResolves.length;
+const busy=_poolResolves.some(r=>r!==null);
+if(busy){_workerPool?.forEach(w=>w.terminate()); _workerPool=null;}
+for(let i=0;i<n;i++){_poolResolves[i]?.(null);_poolResolves[i]=null;}
+}
+function _runSolverBatch(boards,rows,cols,mines,startR,startC,profile){
+const pool=_getPool();
+const maxVars=profile?.maxVars??SOLVER.maxComponentVars;
+const maxSolutions=profile?.maxSolutions??SOLVER.maxComponentSolutions;
+return new Promise(resolve=>{
+let pending=boards.length, settled=false;
+const settle=v=>{if(!settled){settled=true;resolve(v);}};
+boards.forEach((board,i)=>{
+_poolResolves[i]?.(null);
+_poolResolves[i]=result=>{
+if(settled)return;
+if(result===null){settle(null);return;}
+if(result===true){settle(board);return;}
+if(--pending===0)settle(false);
+};
+pool[i].postMessage({board,rows,cols,mines,startR,startC,maxVars,maxSolutions});
+});
+});
+}
+async function placeMines(r,c,gameId){
+const safe=safeZone(r,c);
+if(state.mode!=='noguess'){generateBoard(safe);return;}
+let attempt=0;
+const LIMIT_MS=Math.round(normalizeNoguessTimeSeconds(state.noguessTimeSeconds)*1000);
+const profile=noguessSpeedProfile(state.noguessSpeed);
+const startTime=Date.now();
+const getRemainingMs=()=>Math.max(0,LIMIT_MS-(Date.now()-startTime));
+const updateToast=()=>{
+if(state.gameId!==gameId)return;
+toast(`⚙ 生成无猜棋盘… 剩余 ${(getRemainingMs()/1000).toFixed(1)}s${attempt>0?` · 第 ${attempt} 轮`:''} · ${POOL_SIZE} 线程`,0);
+};
+updateToast();
+const countdownTimer=setInterval(updateToast,200);
+try{
+while(true){
+if(state.gameId!==gameId){_terminateWorker();return;}
+if(getRemainingMs()<=0)throw new Error('超时');
+const boards=Array.from({length:POOL_SIZE},()=>{generateBoard(safe);return state.board.map(row=>row.slice());});
+attempt++; updateToast();
+if(profile.attemptDelay>0){const delay=Math.min(profile.attemptDelay,getRemainingMs());if(delay>0)await sleep(delay);}
+if(state.gameId!==gameId){_terminateWorker();return;}
+if(getRemainingMs()<=0)throw new Error('超时');
+let result,_cancelTimer;
+const timeoutRace=new Promise((_,reject)=>{_cancelTimer=setTimeout(()=>{reject(new Error('超时'));_terminateWorker();},getRemainingMs());});
+try{result=await Promise.race([_runSolverBatch(boards,state.rows,state.cols,state.mines,r,c,profile),timeoutRace]);}
+finally{clearTimeout(_cancelTimer);}
+if(state.gameId!==gameId){_terminateWorker();return;}
+if(result===null)return;
+if(result!==false){state.board=result;state.bv3=computeBV3();_terminateWorker();toast('✓ 无猜棋盘已就绪',2000);return;}
+}
+} finally{clearInterval(countdownTimer);}
+}
+
+function checkWin(){
+if(state.revealedCount>=state.nonMineCount)endGame(true);
+}
+function endGame(won, boomR=-1, boomC=-1){
+state.gameOver=true; stopTimer(); settleGame(won); feedback(won?'win':'explode');
+if(won){
+for(let r=0;r<state.rows;r++) for(let c=0;c<state.cols;c++){
+if(state.board[r][c]===-1&&!state.flagged[r][c]){
+state.flagged[r][c]=true; state.flagCount++; state.questioned[r][c]=false;
+updateCell(r,c);
+const el=cellEl(r,c); if(el)el.classList.add('win-flag');
+}
+}
+updateStats(); updateProgressBar();
+launchConfetti();
+ui.timers.modal=setTimeout(()=>showModal(true),400);
+return;
+}
+for(let r=0;r<state.rows;r++) for(let c=0;c<state.cols;c++){
+if(state.board[r][c]===-1&&!state.flagged[r][c]){
+state.questioned[r][c]=false; state.revealed[r][c]=true; updateCell(r,c);
+} else if(state.board[r][c]!==-1&&state.flagged[r][c]){
+updateCell(r,c);
+const cell=cellEl(r,c);
+if(cell){
+  cell.classList.add('wrong-flag');
+  cell.innerHTML=SVG.wrong;
+  cell.setAttribute('aria-label','错误旗标');
+  cell._sig=null; // 使 undo 后 updateCell 强制重绘，清除 wrong-flag 残留
+}
+}
+}
+const boomCell=cellEl(boomR,boomC);
+if(boomCell)boomCell.classList.add('exploded','anim-explode');
+updateStats(); updateProgressBar();
+ui.timers.modal=setTimeout(()=>showModal(false),600);
+}
+
+const escapeHtml=v=>String(v).replace(/[&<>'"]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+const statCard=(label,value,unit='',small=false)=>`<div class="modal-stat-card"><div class="modal-stat-label">${escapeHtml(label)}</div><div class="modal-stat-value${small?' small':''}">${escapeHtml(value)}${unit?`<small class="modal-stat-unit"> ${escapeHtml(unit)}</small>`:''}</div></div>`;
+const triCard=(items)=>`<div class="modal-stat-card modal-stat-tri">${items.map(([l,v])=>`<div class="tri-row"><span class="tri-label">${escapeHtml(l)}</span><span class="tri-value">${escapeHtml(v)}</span></div>`).join('')}</div>`;
+function formatTimeMs(ms){
+const s=Math.floor(ms/1000);
+return formatTime(s)+'<span class="cs">.'+String(Math.floor((ms%1000)/10)).padStart(2,'0')+'</span>';
+}
+function showModal(won){
+const settlement=state.settlement||settleGame(won);
+const st=settlement.result.stats||settlement.result;
+const circle=dom.modalIconCircle;
+circle.className='modal-icon-circle '+(won?'icon-win':'icon-loss');
+dom.modalIcon.innerHTML=won?RESULT_SVG.check:RESULT_SVG.bomb;
+if(!won){
+void circle.offsetWidth;
+circle.classList.add('animate');
+circle.addEventListener('animationend',()=>circle.classList.remove('animate'),{once:true});
+}
+dom.modalTitle.className=won?'title-win':'title-loss';
+dom.modalTitle.textContent=won?'通关了':'踩雷了！';
+if(won){
+const{isNew,best,stats}=settlement.result;
+const timeMs=state.timeMs||state.time*1000;
+dom.modalBadge.innerHTML=(isNew?`<span class="new-record-badge">🏆 新纪录</span>`:'')
++(stats.streak>1?`<span class="new-record-badge" style="background:linear-gradient(135deg,#10b981,#3b82f6)">🔥 ${stats.streak} 连胜</span>`:'');
+dom.modalStats.className='modal-stats cols-3';
+dom.modalStats.innerHTML=`<div class="modal-stat-card" style="grid-column:1/-1"><div class="modal-stat-label">用时</div><div class="modal-stat-value">${formatTimeMs(timeMs)}<small class="modal-stat-unit"> 秒</small></div></div>`
++statCard('最佳',best?formatTime(best.time):'—',best?'秒':'')
++statCard('胜率',stats.total?Math.round(stats.wins/stats.total*100):0,'%')
++triCard([['3BV',state.bv3],['3BV/s',timeMs>0?(state.bv3/(timeMs/1000)).toFixed(2):'0.00'],['有效点击',state.usefulClicks+'次']]);
+dom.modalMsg.textContent=settlement.cheated
+?'使用了辅助，本局不计入战绩。'
+:isNew?'刷新了最佳记录'
+:'';
+} else {
+dom.modalBadge.innerHTML='';
+const timeStr=formatTime(state.time);
+dom.modalStats.className='modal-stats';
+dom.modalStats.innerHTML=statCard('用时',timeStr,'秒')
++statCard('插旗',state.flagCount,'个')
++statCard('胜率',st.total?Math.round(st.wins/st.total*100):0,'%')
++triCard([['3BV',state.bv3],['有效点击',state.usefulClicks+'次']]);
+dom.modalMsg.textContent=settlement.cheated
+?'使用了辅助，本局不计入战绩。'
+:'再接再厉！';
+}
+dom.modal.classList.add('show'); syncUndoButton();
+}
+const closeModal=()=>{dom.modal.classList.remove('show');stopConfetti();};
+
+function startTimer(){
+if(state.timer)return;
+const maxTimeMs=9999*1000;
+const elapsed=Math.min(state.timeMs>0?state.timeMs:state.time*1000,maxTimeMs);
+state.timeMs=elapsed;
+state.time=Math.min(9999,Math.floor(state.timeMs/1000));
+state.timerStart=Date.now()-elapsed;
+state.timer=setInterval(()=>{
+state.timeMs=Math.min(Date.now()-state.timerStart,maxTimeMs);
+state.time=Math.min(9999,Math.floor(state.timeMs/1000));
+if(state.time>=9999)stopTimer(); updateTimerDisplay();
+},50);
+updateTimerDisplay();
+}
+function stopTimer(){
+clearInterval(state.timer); state.timer=null;
+dom.timerCs.textContent='';
+}
+
+function updateStats(){
+dom.mines.textContent=Math.max(0,state.mines-state.flagCount);
+dom.flags.textContent=state.flagCount;
+updateTimerDisplay();
+}
+
+function startPan(x,y){ui.pan={x,y,ox:ui.offset.x,oy:ui.offset.y};ui.moved=false;dom.wrapper.classList.add('dragging');}
+function setupPanZoom(){
+dom.area.addEventListener('mousedown',e=>{
+if(e.button!==0||(e.target.closest('.cell')&&!state.gameOver&&!state.placing))return;
+startPan(e.clientX,e.clientY);
+});
+document.addEventListener('mousemove',e=>{
+if(!ui.pan)return;
+const dx=e.clientX-ui.pan.x, dy=e.clientY-ui.pan.y;
+if(Math.abs(dx)>5||Math.abs(dy)>5)ui.moved=true;
+ui.offset={x:ui.pan.ox+dx,y:ui.pan.oy+dy}; applyTransform();
+});
+document.addEventListener('mouseup',stopPan);
+
+dom.area.addEventListener('dblclick',e=>{
+if(!e.target.closest('.cell'))resetView();
+});
+dom.area.addEventListener('wheel',e=>{
+e.preventDefault();
+const next=clamp(ui.scale*(e.deltaY<0?1.12:.9),ui.minScale,ui.maxScale);
+if(next===ui.scale)return;
+const wr=dom.wrapper.getBoundingClientRect();
+const dx=e.clientX-(wr.left+wr.width/2), dy=e.clientY-(wr.top+wr.height/2);
+const ratio=1-next/ui.scale;
+ui.offset={x:ui.offset.x+dx*ratio,y:ui.offset.y+dy*ratio};
+ui.scale=next; applyTransform();
+},{passive:false});
+dom.area.addEventListener('touchstart',e=>{
+if(e.touches.length===2){
+const[a,b]=e.touches;
+const cx=(a.clientX+b.clientX)/2, cy=(a.clientY+b.clientY)/2;
+ui.pinch={dist:Math.max(1,Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY)),scale:ui.scale,cx,cy};
+ui.wasPinching=true; stopPan(); dom.wrapper.classList.add('dragging'); e.preventDefault();
+} else if(e.touches.length===1&&(!e.target.closest('.cell')||state.gameOver||state.placing)){
+const t=e.touches[0]; startPan(t.clientX,t.clientY);
+}
+},{passive:false});
+document.addEventListener('touchmove',e=>{
+if(ui.pinch&&e.touches.length>=2){
+const[a,b]=e.touches;
+const cx=(a.clientX+b.clientX)/2, cy=(a.clientY+b.clientY)/2;
+const dist=Math.hypot(b.clientX-a.clientX,b.clientY-a.clientY);
+const next=clamp(ui.pinch.scale*dist/ui.pinch.dist,ui.minScale,ui.maxScale);
+const wr=dom.wrapper.getBoundingClientRect();
+const dx=ui.pinch.cx-(wr.left+wr.width/2), dy=ui.pinch.cy-(wr.top+wr.height/2);
+const ratio=1-next/ui.scale;
+ui.offset={x:ui.offset.x+dx*ratio+(cx-ui.pinch.cx),y:ui.offset.y+dy*ratio+(cy-ui.pinch.cy)};
+ui.scale=next; ui.pinch.cx=cx; ui.pinch.cy=cy;
+applyTransform(); e.preventDefault(); return;
+}
+if(!ui.pan||e.touches.length!==1)return;
+const t=e.touches[0], dx=t.clientX-ui.pan.x, dy=t.clientY-ui.pan.y;
+if(Math.abs(dx)>5||Math.abs(dy)>5)ui.moved=true;
+ui.offset={x:ui.pan.ox+dx,y:ui.pan.oy+dy}; applyTransform();
+},{passive:false});
+document.addEventListener('touchend',e=>{
+if(ui.pinch&&e.touches.length<2){ui.pinch=null;dom.wrapper.classList.remove('dragging');}
+if(!e.touches.length)stopPan();
+},{passive:true});
+document.addEventListener('touchcancel',()=>{ui.pinch=null;stopPan();},{passive:true});
+}
+
+function updateDensityHint(){
+const r=parseInt($('c-rows').value,10)||0, c=parseInt($('c-cols').value,10)||0, m=parseInt($('c-mines').value,10)||0;
+const total=Math.max(0,r*c), ratio=total?Math.max(0,m)/total:0;
+const maxMines=total>9?total-9:1;
+dom.minesHint.textContent=total>9?`(最多 ${maxMines})`:'';
+$('c-mines').max=maxMines; dom.density.className='density-hint'; dom.density.textContent='';
+if(!total)return;
+if(ratio>.5){dom.density.classList.add('error');dom.density.textContent=`⚠ 雷密度 ${Math.round(ratio*100)}%，过高`;}
+else if(total<=30&&m>total*.3){dom.density.classList.add('warn');dom.density.textContent=`格子较少（${total}格），建议降低雷数`;}
+}
+
+function onKeydown(e){
+const settingsOpen=dom.settings.classList.contains('show');
+if(e.key==='Escape')return settingsOpen?closeSettings():closeModal();
+if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'&&!e.shiftKey&&!settingsOpen)return e.preventDefault(),doUndo();
+if(e.key.toLowerCase()==='r'&&!e.ctrlKey&&!e.metaKey&&!settingsOpen){closeModal();dom.settings.classList.remove('show');ui.snap=null;return newGame();}
+if(isBlocked())return;
+if(state.gameOver||state.placing)return;
+if(!(e.key in ARROWS)&&![' ','Enter','f','F'].includes(e.key))return;
+e.preventDefault();
+if(!inBoard(state.kbR,state.kbC)){state.kbR=Math.floor(state.rows/2);state.kbC=Math.floor(state.cols/2);}
+if(e.key in ARROWS){
+const prevCell=cellEl(state.kbR,state.kbC); if(prevCell)prevCell.classList.remove('kb-focus');
+const[dr,dc]=ARROWS[e.key];
+state.kbR=clamp(state.kbR+dr,0,state.rows-1); state.kbC=clamp(state.kbC+dc,0,state.cols-1);
+} else if(e.key===' '||e.key==='Enter'){
+isChordCell(state.kbR,state.kbC)?doChord(state.kbR,state.kbC):handleClick(state.kbR,state.kbC);
+} else if(e.key.toLowerCase()==='f'){
+toggleFlag(state.kbR,state.kbC);
+}
+const cell=cellEl(state.kbR,state.kbC);
+if(cell){
+cell.classList.add('kb-focus');
+nudgeIntoView(cell,40);
+}
+}
+
+function setupEvents(){
+const onClick=(id,fn)=>{const el=$(id); if(el)el.addEventListener('click',fn);};
+[
+['btn-newgame',newGame],
+['btn-replay',()=>{closeModal();newGame();}],
+['btn-close-modal',closeModal],
+['btn-settings',openSettings],
+['btn-close-settings',closeSettings],
+['btn-close-warning',()=>dom.warning.hidden=true],
+['btn-undo-modal',doUndo],
+['btn-undo-topbar',doUndo],
+['btn-apply-custom',()=>{applyCustomConfig({selectDifficulty:true});ui.snap=null;dom.settings.classList.remove('show');newGame();}],
+['btn-reset-settings',function(){
+if(ui.confirmReset){clearTimeout(ui.confirmReset);ui.confirmReset=null;this.textContent='重置所有设置';resetAllSettings();return;}
+this.textContent='再点一次确认重置';
+ui.confirmReset=setTimeout(()=>{ui.confirmReset=null;this.textContent='重置所有设置';},3000);
+}],
+].forEach(([id,fn])=>onClick(id,fn));
+
+[
+['toggle-dark','change',e=>{document.body.classList.toggle('dark',e.target.checked);saveSettings();}],
+['toggle-sound','change',e=>{state.soundEnabled=e.target.checked;saveSettings();}],
+['toggle-question','change',e=>{state.questionMarkEnabled=e.target.checked;saveSettings();}],
+['noguess-speed','input',e=>{syncNoguessSpeedUI(e.target.value);saveSettings();}],
+['noguess-time-seconds','input',e=>readNoguessTimeInput(e.target,false)],
+['noguess-time-seconds','blur',e=>readNoguessTimeInput(e.target,true)],
+].forEach(([id,ev,fn])=>$(id).addEventListener(ev,fn));
+
+['c-rows','c-cols','c-mines'].forEach(id=>$(id).addEventListener('input',updateDensityHint));
+dom.settings.addEventListener('click',e=>{
+const btn=e.target.closest('[data-set]');
+if(btn)applySetting(btn.dataset.set,btn.dataset.val);
+else if(e.target===e.currentTarget)closeSettings();
+});
+document.addEventListener('keydown',onKeydown);
+window.addEventListener('resize',()=>{stopTimerId('resize');ui.timers.resize=setTimeout(adjustBoardSize,100);});
+window.addEventListener('pagehide',()=>{if(ui.timers.save){clearTimeout(ui.timers.save);ui.timers.save=null;_flushSettings();}ui.audio?.close();},{once:true});
+setupPanZoom();
+}
+
+function init(){
+loadSettings();
+setupEvents();
+newGame();
+// 写入无猜线程数提示
+const hint=document.getElementById('noguess-thread-hint');
+if(hint){
+const cores=navigator.hardwareConcurrency||0;
+hint.textContent=`并行线程：${POOL_SIZE} 个${cores?`（检测到 ${cores} 核 CPU）`:''}`;
+}
+}
+init();
+</script>
+</body></html>
