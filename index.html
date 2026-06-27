@@ -953,7 +953,8 @@ return _workerPool;
 }
 function _terminateWorker(){
 const n=_poolResolves.length;
-_workerPool?.forEach(w=>w.terminate()); _workerPool=null;
+const busy=_poolResolves.some(r=>r!==null);
+if(busy){_workerPool?.forEach(w=>w.terminate()); _workerPool=null;}
 for(let i=0;i<n;i++){_poolResolves[i]?.(null);_poolResolves[i]=null;}
 }
 function _runSolverBatch(boards,rows,cols,mines,startR,startC,profile){
